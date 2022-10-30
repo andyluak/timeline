@@ -1,0 +1,88 @@
+{
+	"navLinks": [
+		{
+			"title": "Home",
+			"link": "/"
+		},
+		{
+			"title": "Features",
+			"link": "#features"
+		},
+		{
+			"title": "Use Cases",
+			"link": "#use-cases"
+		}
+	],
+	"hero": {
+		"title": "Your changelog website template",
+		"body": "Be in charge of your changes and how they look"
+	},
+	"features": [
+		{
+			"title": "Feature 1",
+			"body": "Timeline is simple and easy to use and will look and respond great to any product or app that receives updates."
+		},
+		{
+			"title": "Feature 2",
+			"body": "Timeline is simple and easy to use and will look and respond great to any product or app that receives updates."
+		}
+	],
+	"useCases": [
+		{
+			"title": "Use Case 1",
+			"body": "Timeline is simple and easy to use and will look and respond great to any product or app that receives updates."
+		},
+		{
+			"title": "Use Case 2",
+			"body": "Timeline is simple and easy to use and will look and respond great to any product or app that receives updates."
+		}
+	],
+	"footer": {
+		"groups": [
+			{
+				"title": "My Account",
+				"links": [
+					{
+						"title": "Sign In",
+						"link": "/sign-in"
+					},
+					{
+						"title": "Register",
+						"link": "/register"
+					}
+				]
+			},
+			{
+				"title": "Help",
+				"links": [
+					{
+						"title": "Terms Of Use",
+						"link": "/help/terms-of-use"
+					},
+					{
+						"title": "Privacy Policy",
+						"link": "/help/privacy-policy"
+					}
+				]
+			}
+		],
+		"social": [
+			{
+				"title": "Twitter",
+				"link": "https://twitter.com/username",
+				"icon": "twitter"
+			},
+			{
+				"title": "Facebook",
+				"link": "https://facebook.com/username",
+				"icon": "facebook"
+			},
+			{
+				"title": "Instagram",
+				"link": "https://instagram.com/username",
+				"icon": "instagram"
+			}
+		]
+	},
+	"copyright": "© 2022 Meevi. All rights reserved."
+}
