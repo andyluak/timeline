@@ -32,6 +32,8 @@ export default function Home({ hero, features, useCases }) {
               src={"/hero.svg"}
               width={isMobile ? 300 : 400}
               height={400}
+              alt="hero image"
+              priority
             />
           </div>
         </div>
@@ -40,12 +42,16 @@ export default function Home({ hero, features, useCases }) {
         <div className="flex flex-col justify-around md:flex-row">
           {features.map((f, i) => {
             return (
-              <div className="my-2 flex flex-col items-start px-4 py-6 md:mx-2 md:w-[500px]" key={i}>
+              <div
+                className="my-2 flex flex-col items-start px-4 py-6 md:mx-2 md:w-[500px]"
+                key={i}
+              >
                 <div className="relative">
                   <Image
                     src={"https://placehold.jp/300x300.png"}
                     width={400}
                     height={400}
+                    alt="placeholder"
                   />
                 </div>
                 <div className="mt-2 flex flex-col items-start gap-4 text-white">
@@ -65,12 +71,16 @@ export default function Home({ hero, features, useCases }) {
         <div className="flex flex-col justify-around md:flex-row">
           {useCases.map((u, i) => {
             return (
-              <div className="my-2 flex flex-col items-start bg-gray-300 px-4 py-6 md:mx-2 md:w-[500px]" key={i}>
+              <div
+                className="my-2 flex flex-col items-start bg-gray-300 px-4 py-6 md:mx-2 md:w-[500px]"
+                key={i}
+              >
                 <div className="relative w-full">
                   <Image
                     src={"https://placehold.jp/300x300.png"}
                     width={400}
                     height={400}
+                    alt="placeholder"
                   />
                 </div>
                 <div className="mt-2 flex flex-col items-start gap-4">

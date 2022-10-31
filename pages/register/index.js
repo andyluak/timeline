@@ -3,130 +3,130 @@ import { useState } from "react";
 import { setAuthCookie } from "../../utils/cookie";
 
 function Register() {
-	const [errors, setErrors] = useState([]);
-	const router = useRouter();
+  const [errors, setErrors] = useState([]);
+  const router = useRouter();
 
-	const registerFormContent = [
-		{
-			label: "Username",
-			type: "text",
-			name: "username",
-		},
-		{
-			label: "Password",
-			type: "password",
-			name: "password",
-		},
-		{
-			label: "Confirm Password",
-			type: "password",
-			name: "confirmPassword",
-		},
-	];
+  const registerFormContent = [
+    {
+      label: "Username",
+      type: "text",
+      name: "username",
+    },
+    {
+      label: "Password",
+      type: "password",
+      name: "password",
+    },
+    {
+      label: "Confirm Password",
+      type: "password",
+      name: "confirmPassword",
+    },
+  ];
 
-	const register = async ({ username, password }) => {
-		const res = await fetch(`${process.env.NEXT_PUBLIC_API}/user`, {
-			method: "POST",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				username,
-				password,
-			}),
-		});
+  const register = async ({ username, password }) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/user`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    });
 
-		if (res.status > 300) {
-			const error = await res.json();
-			setErrors([error.message]);
-			return;
-		}
+    if (res.status > 300) {
+      const error = await res.json();
+      setErrors([error.message]);
+      return;
+    }
 
-		const token = await res.json();
-		return token;
-	};
+    const token = await res.json();
+    return token;
+  };
 
-	const onHandleSubmit = async (e) => {
-		setErrors([]);
-		e.preventDefault();
-		const formData = new FormData(e.target);
-		const { username, password } = Object.fromEntries(formData);
+  const onHandleSubmit = async (e) => {
+    setErrors([]);
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const { username, password } = Object.fromEntries(formData);
 
-		const validatePassword = (password) => {
-			const minLength = password.length >= 8;
-			const hasNumber = /\d/.test(password);
-			const hasUpperCase = /[A-Z]/.test(password);
-			const hasLowerCase = /[a-z]/.test(password);
+    const validatePassword = (password) => {
+      const minLength = password.length >= 8;
+      const hasNumber = /\d/.test(password);
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
 
-			return minLength && hasNumber && hasUpperCase && hasLowerCase;
-		};
+      return minLength && hasNumber && hasUpperCase && hasLowerCase;
+    };
 
-		const validateUsername = (username) => {
-			const hasSymbols = /[^a-zA-Z0-9]/.test(username);
-			const hasWhiteSpace = /\s/.test(username);
-			const hasUpperCase = /[A-Z]/.test(username);
+    const validateUsername = (username) => {
+      const hasSymbols = /[^a-zA-Z0-9]/.test(username);
+      const hasWhiteSpace = /\s/.test(username);
+      const hasUpperCase = /[A-Z]/.test(username);
 
-			return !hasSymbols && !hasWhiteSpace && !hasUpperCase;
-		};
+      return !hasSymbols && !hasWhiteSpace && !hasUpperCase;
+    };
 
-		if (!validateUsername(username)) {
-			setErrors([
-				...errors,
-				"Username must be lowercase and contain no symbols or spaces",
-			]);
-			return;
-		}
+    if (!validateUsername(username)) {
+      setErrors([
+        ...errors,
+        "Username must be lowercase and contain no symbols or spaces",
+      ]);
+      return;
+    }
 
-		if (!validatePassword(password)) {
-			// Add the error to existing error array
-			setErrors((errors) => [
-				...errors,
-				"Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.",
-			]);
+    if (!validatePassword(password)) {
+      // Add the error to existing error array
+      setErrors((errors) => [
+        ...errors,
+        "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.",
+      ]);
 
-			return;
-		}
+      return;
+    }
 
-		const { token } = await register({ username, password });
+    const { token } = await register({ username, password });
 
-		if (token) {
-			setAuthCookie(token);
-			router.push("/");
-		}
-	};
-	return (
-		<section className="responsive-padding">
-			<h2 className="text-4xl font-bold md:text-center">Register</h2>
-			<form
-				className="mt-4 flex flex-col md:m-auto md:w-1/2"
-				onSubmit={onHandleSubmit}
-			>
-				{registerFormContent.map((f, i) => {
-					return (
-						<div className="mb-2 flex flex-col" key={i}>
-							<label>{f.label}</label>
-							<input type={f.type} name={f.name} />
-						</div>
-					);
-				})}
-				<button
-					className="relative mt-2 border bg-black p-3 uppercase text-white transition-all hover:border hover:border-black hover:bg-white hover:text-black"
-					aria-label="Sign In"
-					type="submit"
-				>
-					Register
-				</button>
-			</form>
-			{errors.map((e, i) => {
-				return (
-					<p key={i} className="mt-4 text-red-500 md:text-center">
-						{e}
-					</p>
-				);
-			})}
-		</section>
-	);
+    if (token) {
+      setAuthCookie(token);
+      router.push("/");
+    }
+  };
+  return (
+    <section className="responsive-padding">
+      <h2 className="text-4xl font-bold md:text-center">Register</h2>
+      <form
+        className="mt-4 flex flex-col md:m-auto md:w-1/2"
+        onSubmit={onHandleSubmit}
+      >
+        {registerFormContent.map((f, i) => {
+          return (
+            <div className="mb-2 flex flex-col" key={i}>
+              <label>{f.label}</label>
+              <input type={f.type} name={f.name} />
+            </div>
+          );
+        })}
+        <button
+          className="relative mt-2 border bg-black p-3 uppercase text-white transition-all hover:border hover:border-black hover:bg-white hover:text-black"
+          aria-label="Sign In"
+          type="submit"
+        >
+          Register
+        </button>
+      </form>
+      {errors.map((e, i) => {
+        return (
+          <p key={i} className="mt-4 text-red-500 md:text-center">
+            {e}
+          </p>
+        );
+      })}
+    </section>
+  );
 }
 
 export default Register;
