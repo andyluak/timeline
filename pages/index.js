@@ -40,7 +40,7 @@ export default function Home({ hero, features, useCases }) {
         <div className="flex flex-col justify-around md:flex-row">
           {features.map((f, i) => {
             return (
-              <div className="my-2 flex flex-col items-start px-4 py-6 md:mx-2 md:w-[500px]">
+              <div className="my-2 flex flex-col items-start px-4 py-6 md:mx-2 md:w-[500px]" key={i}>
                 <div className="relative">
                   <Image
                     src={"https://placehold.jp/300x300.png"}
@@ -65,7 +65,7 @@ export default function Home({ hero, features, useCases }) {
         <div className="flex flex-col justify-around md:flex-row">
           {useCases.map((u, i) => {
             return (
-              <div className="my-2 flex flex-col items-start bg-gray-300 px-4 py-6 md:mx-2 md:w-[500px]">
+              <div className="my-2 flex flex-col items-start bg-gray-300 px-4 py-6 md:mx-2 md:w-[500px]" key={i}>
                 <div className="relative w-full">
                   <Image
                     src={"https://placehold.jp/300x300.png"}
