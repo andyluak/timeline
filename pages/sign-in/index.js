@@ -5,6 +5,8 @@ import { setAuthCookie } from "../../utils/cookie";
 
 function SignIn() {
   const [errors, setErrors] = useState([]);
+  const [validEmail, setValidEmail] = useState(false);
+  const [validPassword, setValidPassword] = useState(false);
   const router = useRouter();
 
   const loginFormContent = [
@@ -67,11 +69,12 @@ function SignIn() {
     };
 
     if (!validateUsername(username)) {
-      setErrors([
+      setErrors((errors) => [
         ...errors,
         "Username must be lowercase and contain no symbols or spaces",
       ]);
-      return;
+    } else {
+      setValidEmail(true);
     }
 
     if (!validatePassword(password)) {
@@ -80,15 +83,19 @@ function SignIn() {
         ...errors,
         "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.",
       ]);
-
-      return;
+    } else {
+      setValidPassword(true);
     }
 
-    const { token } = await signIn({ username, password });
+    if (validEmail && validPassword) {
+      const { token } = await signIn({ username, password });
 
-    if (token) {
-      setAuthCookie(token);
-      router.push("/");
+      if (token) {
+        setAuthCookie(token);
+        router.push("/");
+      }
+    } else {
+      return;
     }
   };
 
