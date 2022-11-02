@@ -9,7 +9,7 @@ function Navbar({ links }) {
   const { isMobile } = useDeviceSize();
   const { isLoggedIn } = useUser();
   return (
-    <nav className="responsive-padding flex justify-between">
+    <nav className="responsive-padding mb-2 flex justify-between">
       {isMobile ? (
         <Image
           src="/icons/hamburger.svg"
@@ -30,11 +30,11 @@ function Navbar({ links }) {
         </div>
       )}
       <Link href="/">
-        <div className="absolute left-1/2 -top-5 flex -translate-x-1/2 items-center p-5">
+        <div className="absolute left-1/2 -top-5 mt-5 flex -translate-x-1/2 items-center">
           <Image
             src="/logo.svg"
             width={120}
-            height={isMobile ? 100 : 200}
+            height={isMobile ? 70 : 200}
             alt="logo"
           />
         </div>

@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
+import Layout from "../../components/layouts/Layout";
 import { setAuthCookie } from "../../utils/cookie";
 
 function Register() {
@@ -128,5 +129,9 @@ function Register() {
     </section>
   );
 }
+
+Register.getLayout = function getLayout(page) {
+  return <Layout title="Register">{page}</Layout>;
+};
 
 export default Register;

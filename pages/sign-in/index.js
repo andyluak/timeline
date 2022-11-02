@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import Layout from "../../components/layouts/Layout";
 import { setAuthCookie } from "../../utils/cookie";
 
 function SignIn() {
@@ -110,7 +111,7 @@ function SignIn() {
           return (
             <div className="mb-2 flex flex-col" key={i}>
               <label>{f.label}</label>
-              <input type={f.type} name={f.name} />
+              <input type={f.type} name={f.name} autoComplete="off" />
             </div>
           );
         })}
@@ -143,5 +144,13 @@ function SignIn() {
     </section>
   );
 }
+
+SignIn.getLayout = function getLayout(page) {
+  return (
+    <Layout title="Sign In">
+      <>{page}</>
+    </Layout>
+  );
+};
 
 export default SignIn;
