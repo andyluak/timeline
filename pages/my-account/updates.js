@@ -14,15 +14,22 @@ import Plus from "public/icons/plus.svg";
 
 import content from "content.json";
 import UpdateCreator from "containers/UpdateCreator";
+import UpdatePointCreator from "containers/UpdatePointCreator";
+
+import UpdatePoints from 'containers/UpdatePoints';
 
 function Updates({ products }) {
   const [isCreatingUpdate, setIsCreatingUpdate] = useState(false);
+  const [isCreatingUpdatePoint, setIsCreatingUpdatePoint] = useState(false);
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [updates, setUpdates] = useState([]);
 
   const [selectedUpdate, setSelectedUpdate] = useState(null);
   const [updatePoints, setUpdatePoints] = useState([]);
+
+  let formattedUpdatePoints;
+  
 
   const handleProductSelection = async (id) => {
     const product = products.find((product) => {
@@ -89,14 +96,44 @@ function Updates({ products }) {
           onClick={() => setIsCreatingUpdate(!isCreatingUpdate)}
         />
         {isCreatingUpdate && (
-          <UpdateCreator selectedProduct={selectedProduct} />
+          <UpdateCreator selectedProduct={selectedProduct} setIsCreatingUpdate={setIsCreatingUpdate}/>
         )}
         {selectedProduct && selectedUpdate && (
-          <h2 className="tracking-header mt-8 text-left text-3xl md:text-left">
+          <h2 className="tracking-header mt-8 mb-4 text-left text-3xl md:text-left">
             Update Points
           </h2>
         )}
       </div>
+      {selectedProduct && selectedUpdate && updatePoints.length == 0 && (
+        <>
+        <div className="mb-8 flex flex-col items-center md:items-start">
+          <p className="tracking-body mt-4 text-center text-xl md:text-left">
+            You have no update points yet. Click the button below to add an update point.
+          </p>
+          <Button
+            text="add update point"
+            icon={<Plus />}
+            onClick={() => setIsCreatingUpdatePoint(!isCreatingUpdatePoint)}
+          />
+        </div>
+        {isCreatingUpdatePoint && (
+          <UpdatePointCreator selectedUpdate={selectedUpdate} setIsCreatingUpdatePoint={setIsCreatingUpdatePoint}/>
+        )}
+        </>
+      )}
+      {selectedProduct && selectedUpdate && updatePoints.length > 0 && (
+        <>
+          <UpdatePoints updatePoints={updatePoints} />
+          <Button
+            text="add update point"
+            icon={<Plus />}
+            onClick={() => setIsCreatingUpdatePoint(!isCreatingUpdatePoint)}
+          />
+          {isCreatingUpdatePoint && (
+          <UpdatePointCreator selectedUpdate={selectedUpdate} setIsCreatingUpdatePoint={setIsCreatingUpdatePoint} handleUpdateSelection={handleUpdateSelection}/>
+        )}
+        </>
+      )}
     </section>
   );
 }

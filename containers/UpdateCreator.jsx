@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 import { getAuthCookie } from "utils/cookie";
 
-function UpdateCreator({ selectedProduct }) {
+function UpdateCreator({ selectedProduct, setIsCreatingUpdate }) {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -44,7 +44,7 @@ function UpdateCreator({ selectedProduct }) {
         title,
         status,
         body: body === "" ? false : body,
-        productId: selectedProduct
+        productId: selectedProduct,
       }),
     });
 
@@ -54,7 +54,6 @@ function UpdateCreator({ selectedProduct }) {
     }
 
     setLoading(false);
-    router.replace(router.asPath);
     return res;
   }
 
@@ -73,11 +72,16 @@ function UpdateCreator({ selectedProduct }) {
     }
 
     setLoading(true);
-    await addUpdate({title,body,status});
+    setIsCreatingUpdate(false);
+    await addUpdate({ title, body, status });
+    router.reload();
   };
   return (
     <>
-      <form className="flex flex-col gap-4 w-2/3 mt-8" onSubmit={handleOnSubmit}>
+      <form
+        className="mt-8 flex w-2/3 flex-col gap-4"
+        onSubmit={handleOnSubmit}
+      >
         {updateCreatorFormContent.map(({ type, label, name, values }, i) => {
           switch (type) {
             case "text":
