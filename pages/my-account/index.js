@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import useDeviceSize from "../../hooks/useDeviceSize";
-import MyAccountMobile from "../../components/layouts/MyAccountMobile";
-import Layout from "../../components/layouts/Layout";
-import { getAuthCookie } from "../../utils/cookie";
+import useDeviceSize from "hooks/useDeviceSize";
+import MyAccountMobile from "components/layouts/MyAccountMobile";
+import Layout from "components/layouts/Layout";
+import { getAuthCookie } from "utils/cookie";
 
 function MyAccount() {
   const [errors, setErrors] = useState([]);

@@ -1,7 +1,7 @@
 import React from "react";
-import Navbar from "../Navbar";
-import Footer from "../Footer";
-import content from "../../content.json";
+import Navbar from "components/Navbar";
+import Footer from "components/Footer";
+import content from "content.json";
 import Head from "next/head";
 
 function Layout({ children, title }) {

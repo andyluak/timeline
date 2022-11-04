@@ -3,5 +3,8 @@
   "tabWidth": 2,
   "semi": true,
   "singleQuote": false,
-  "indentStyle": "space"
+  "indentStyle": "space",
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrder": ["^components/(.*)$", "^utils/(.*)$", "^public/(.*)$", "^hooks[./]"]
 }

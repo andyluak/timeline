@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import Layout from "../../components/layouts/Layout";
-import MyAccountMobile from "../../components/layouts/MyAccountMobile";
-import ProductCreator from "../../containers/ProductCreator";
-import Button from "../../components/ui/Button";
-import useDeviceSize from "../../hooks/useDeviceSize";
-import Plus from "../../public/icons/plus.svg";
-import ProductListItem from "../../containers/ProductListItem";
+import Layout from "components/layouts/Layout";
+import MyAccountMobile from "components/layouts/MyAccountMobile";
+import ProductCreator from "containers/ProductCreator";
+import Button from "components/ui/Button";
+import useDeviceSize from "hooks/useDeviceSize";
+import Plus from "public/icons/plus.svg";
+import ProductListItem from "containers/ProductListItem";
 
 function Products({ products }) {
   const [isCreatingProduct, setIsCreatingProduct] = useState(false);
