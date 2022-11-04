@@ -69,26 +69,30 @@ const Dropdown = ({ links }) => {
   );
 };
 
-const ProductDropdown = ({ products }) => {
+const ProductDropdown = ({
+  products,
+  selectCallback,
+  selectedProduct,
+  setSelectedProduct,
+}) => {
   const [isOpen, setOpen] = useState(false);
-  const [items, _] = useState(products);
-  const [selectedItem, setSelectedItem] = useState(null);
 
   const toggleDropdown = () => setOpen(!isOpen);
 
   const handleItemClick = (id) => {
-    setSelectedItem(id);
+    setSelectedProduct(id);
     setOpen(false);
+    selectCallback(id);
   };
-  console.log(products);
   return (
     <div className="m-auto w-[300px] border border-slate-400 bg-white shadow-md md:m-0 md:mt-4">
       <div
         className="flex cursor-pointer items-center justify-between p-4"
         onClick={toggleDropdown}
       >
-        {selectedItem !== null
-          ? items.find((item) => item.id == selectedItem).name
+        {selectedProduct !== null
+          ? products.find((item) => item.id == selectedProduct)?.name ||
+            products.find((item) => item.id == selectedProduct)?.title
           : "Select your product"}
         <i>
           <Image
@@ -105,15 +109,17 @@ const ProductDropdown = ({ products }) => {
           isOpen ? "block" : "hidden"
         }`}
       >
-        {items
-          .filter((item) => item.id != selectedItem)
+        {products
+          .filter((item) => item.id != selectedProduct)
           .map((item, i) => (
             <div
               className="p-4 hover:cursor-pointer hover:underline"
               onClick={(e) => handleItemClick(e.target.id)}
               id={item.id}
+              key={item.id}
             >
-              {item.name}
+              {item?.name}
+              {item?.title}
             </div>
           ))}
       </div>

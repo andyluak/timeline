@@ -3,15 +3,14 @@
   "tabWidth": 2,
   "semi": true,
   "singleQuote": false,
-  "indentStyle": "space",
   "importOrder": [
     "^core/(.*)$",
     "^components/(.*)$",
     "^containers/(.*)$",
-    "^utils/(.*)$",
-    "^public/(.*)$",
     "^hooks[./]",
     "^pages[./]",
+    "^utils/(.*)$",
+    "^public/(.*)$",
     "^[./|~/]"
   ],
   "importOrderSeparation": true,

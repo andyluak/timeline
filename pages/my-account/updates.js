@@ -1,24 +1,102 @@
 import React, { useState } from "react";
 
+import MyAccountDesktop from "components/layouts/MyAccountDesktop";
 import Layout from "components/layouts/Layout";
 import MyAccountMobile from "components/layouts/MyAccountMobile";
-import MyAccountDesktop from "components/layouts/MyAccountDesktop";
+import Button from "components/ui/Button";
+import { ProductDropdown } from "components/ui/Dropdown";
 
 import { getAuthCookie } from "utils/cookie";
 
 import useDeviceSize from "hooks/useDeviceSize";
 
+import Plus from "public/icons/plus.svg";
+
 import content from "content.json";
+import UpdateCreator from "containers/UpdateCreator";
 
-import { ProductDropdown } from "components/ui/Dropdown";
+function Updates({ products }) {
+  const [isCreatingUpdate, setIsCreatingUpdate] = useState(false);
 
-function Updates({products}) {
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [updates, setUpdates] = useState([]);
+
+  const [selectedUpdate, setSelectedUpdate] = useState(null);
+  const [updatePoints, setUpdatePoints] = useState([]);
+
+  const handleProductSelection = async (id) => {
+    const product = products.find((product) => {
+      return product.id == id;
+    });
+
+    setUpdates(product.updates);
+  };
+
+  const handleUpdateSelection = async (id) => {
+    const auth_token = getAuthCookie();
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/api/update/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth_token}`,
+          },
+        }
+      );
+      const update = await res.json();
+      setUpdatePoints(update.updatePoints);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <section className="responsive-padding flex w-full flex-col justify-start">
-      <h1 className="tracking-header text-center text-4xl font-bold hidden md:block md:text-left">
+      <h1 className="tracking-header hidden text-center text-4xl font-bold md:block md:text-left">
         Updates
       </h1>
-      <ProductDropdown products={products}/>
+      <ProductDropdown
+        products={products}
+        selectCallback={handleProductSelection}
+        selectedProduct={selectedProduct}
+        setSelectedProduct={setSelectedProduct}
+      />
+      {selectedProduct && updates.length === 0 && (
+        <div className="mb-8 flex flex-col items-center md:items-start">
+          <p className="tracking-body mt-8 text-center text-xl md:text-left">
+            You have no updates yet. Click the button below to add an update.
+          </p>
+          <Button
+            text="add update"
+            icon={<Plus />}
+            onClick={() => setIsCreatingUpdate(!isCreatingUpdate)}
+          />
+        </div>
+      )}
+      {updates.length > 0 && (
+        <ProductDropdown
+          products={updates}
+          selectCallback={handleUpdateSelection}
+          selectedProduct={selectedUpdate}
+          setSelectedProduct={setSelectedUpdate}
+        />
+      )}
+      <div className="flex w-full flex-col items-center justify-center gap-8 md:block">
+        <Button
+          text="add update"
+          icon={<Plus />}
+          onClick={() => setIsCreatingUpdate(!isCreatingUpdate)}
+        />
+        {isCreatingUpdate && (
+          <UpdateCreator selectedProduct={selectedProduct} />
+        )}
+        {selectedProduct && selectedUpdate && (
+          <h2 className="tracking-header mt-8 text-left text-3xl md:text-left">
+            Update Points
+          </h2>
+        )}
+      </div>
     </section>
   );
 }
@@ -39,6 +117,7 @@ export const getServerSideProps = async (context) => {
       Authorization: `Bearer ${auth_token}`,
     },
   });
+
   const menuLinks = content.menuLinks;
 
   return {

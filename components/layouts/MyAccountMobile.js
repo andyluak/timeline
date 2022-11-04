@@ -5,8 +5,8 @@ import Dropdown from "components/ui/Dropdown";
 function MyAccountMobile({ children, links }) {
   return (
     <>
-      <nav className="flex justify-center items-center">
-        <Dropdown links={links}/>
+      <nav className="flex items-center justify-center">
+        <Dropdown links={links} />
       </nav>
       {children}
     </>

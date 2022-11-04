@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-function Sidebar({links}) {
+function Sidebar({ links }) {
   const pathname = useRouter().pathname;
   const getSelectedItemId = () => {
     let arrayPath = pathname.split("/");
@@ -18,16 +18,16 @@ function Sidebar({links}) {
 
   useEffect(() => {
     setSelectedItem(getSelectedItemId());
-  }, [pathname])
+  }, [pathname]);
 
   return (
-    <aside className="responsive-padding flex w-52 h-screen flex-col gap-4 border-r-2 border-r-black">
+    <aside className="responsive-padding flex h-screen w-52 flex-col gap-4 border-r-2 border-r-black md:w-96">
       {links.map((item) => {
         return (
           <Link
             href={`/my-account${item.href}`}
             key={item.id}
-            className={`${selectedItem == item.id ? "underline" : ""}`}
+            className={`${selectedItem == item.id ? "underline" : ""} w-full`}
           >
             {item.label}
           </Link>

@@ -4,7 +4,7 @@ import React from "react";
 function MyAccountDesktop({ children, links }) {
   return (
     <div className="flex flex-row">
-      <Sidebar links={links}/>
+      <Sidebar links={links} />
       {children}
     </div>
   );
