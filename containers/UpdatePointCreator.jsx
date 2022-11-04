@@ -1,8 +1,12 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { getAuthCookie } from 'utils/cookie';
+import { getAuthCookie } from "utils/cookie";
 
-function UpdatePointCreator({ selectedUpdate, setIsCreatingUpdatePoint, handleUpdateSelection }) {
+function UpdatePointCreator({
+  selectedUpdate,
+  setIsCreatingUpdatePoint,
+  handleUpdateSelection,
+}) {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -74,51 +78,56 @@ function UpdatePointCreator({ selectedUpdate, setIsCreatingUpdatePoint, handleUp
 
   return (
     <>
-    <form className="flex flex-col gap-4 w-2/3 mt-8" onSubmit={handleOnSubmit}>
-      {updatePointCreatorFormContent.map(({ type, label, name, values }, i) => {
-        switch (type) {
-          case "textarea":
-            return (
-              <div className="mb-2 flex flex-col" key={i}>
-                <label>{label}</label>
-                <textarea name={name} />
-              </div>
-            );
-
-          case "select":
-            return (
-              <div className="mb-2 flex flex-col" key={i}>
-                <label>{label}</label>
-                <select name={name}>
-                  {values.map(({ id, label }, i) => {
-                    return (
-                      <option key={i} value={id}>
-                        {label}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-            );
-        }
-      })}
-      <button
-        className="relative mt-2 border bg-black p-3 uppercase text-white transition-all hover:border hover:border-black hover:bg-white hover:text-black"
-        aria-label="Sign In"
-        type="submit"
+      <form
+        className="mt-8 flex w-2/3 flex-col gap-4"
+        onSubmit={handleOnSubmit}
       >
-        {loading ? "Loading..." : "Save"}
-      </button>
-    </form>
-    {errors.map((e, i) => {
-      return (
-        <p key={i} className="mt-4 text-center text-red-500">
-          {e}
-        </p>
-      );
-    })}
-  </>
-  )
+        {updatePointCreatorFormContent.map(
+          ({ type, label, name, values }, i) => {
+            switch (type) {
+              case "textarea":
+                return (
+                  <div className="mb-2 flex flex-col" key={i}>
+                    <label>{label}</label>
+                    <textarea name={name} />
+                  </div>
+                );
+
+              case "select":
+                return (
+                  <div className="mb-2 flex flex-col" key={i}>
+                    <label>{label}</label>
+                    <select name={name}>
+                      {values.map(({ id, label }, i) => {
+                        return (
+                          <option key={i} value={id}>
+                            {label}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                );
+            }
+          }
+        )}
+        <button
+          className="relative mt-2 border bg-black p-3 uppercase text-white transition-all hover:border hover:border-black hover:bg-white hover:text-black"
+          aria-label="Sign In"
+          type="submit"
+        >
+          {loading ? "Loading..." : "Save"}
+        </button>
+      </form>
+      {errors.map((e, i) => {
+        return (
+          <p key={i} className="mt-4 text-center text-red-500">
+            {e}
+          </p>
+        );
+      })}
+    </>
+  );
 }
 
 export default UpdatePointCreator;

@@ -27,9 +27,9 @@ function UpdatePoints({ updatePoints }) {
     <div className="flex flex-col gap-6">
       {hasFeatures && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-2xl font-bold tracking-body">Features</h3>
+          <h3 className="tracking-body text-2xl font-bold">Features</h3>
           <ul className="flex flex-col gap-1">
-            {updatePointsByType.FEATURE.map((point,i) => (
+            {updatePointsByType.FEATURE.map((point, i) => (
               <UpdatePoint point={point} order={i} />
             ))}
           </ul>
@@ -37,7 +37,7 @@ function UpdatePoints({ updatePoints }) {
       )}
       {hasBugFixes && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-2xl font-bold tracking-body">Bug Fixes</h3>
+          <h3 className="tracking-body text-2xl font-bold">Bug Fixes</h3>
           <ul>
             {updatePointsByType.BUG_FIX.map((point, i) => (
               <li key={i}>{`${i + 1}.${point.description}`}</li>
@@ -47,9 +47,9 @@ function UpdatePoints({ updatePoints }) {
       )}
       {hasImprovements && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-2xl font-bold tracking-body">Improvements</h3>
+          <h3 className="tracking-body text-2xl font-bold">Improvements</h3>
           <ul>
-            {updatePointsByType.IMPROVEMENT.map((point,i) => (
+            {updatePointsByType.IMPROVEMENT.map((point, i) => (
               <li key={point.id}>{`${i + 1}.${point.description}`}</li>
             ))}
           </ul>
