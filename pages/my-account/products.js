@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Layout from "components/layouts/Layout";
 import MyAccountMobile from "components/layouts/MyAccountMobile";
 import Button from "components/ui/Button";
+import MyAccountDesktop from "components/layouts/MyAccountDesktop";
 
 import ProductCreator from "containers/ProductCreator";
 import ProductListItem from "containers/ProductListItem";
@@ -11,10 +12,12 @@ import Plus from "public/icons/plus.svg";
 
 import useDeviceSize from "hooks/useDeviceSize";
 
+import content from "content.json";
+
 function Products({ products }) {
   const [isCreatingProduct, setIsCreatingProduct] = useState(false);
   return (
-    <section className="responsive-padding flex flex-col justify-center">
+    <section className="responsive-padding flex w-full flex-col justify-start">
       <h1 className="tracking-header text-center text-4xl font-bold md:text-left">
         Product Details
       </h1>
@@ -49,19 +52,6 @@ function Products({ products }) {
   );
 }
 
-Products.getLayout = function getLayout(page) {
-  const { isMobile } = useDeviceSize();
-  const LayoutComponent = isMobile ? MyAccountMobile : React.Fragment;
-
-  return (
-    <>
-      <Layout title="My Products">
-        <LayoutComponent>{page}</LayoutComponent>
-      </Layout>
-    </>
-  );
-};
-
 export const getServerSideProps = async (context) => {
   const { req, res } = context;
   const { auth_token } = req.cookies;
@@ -70,7 +60,7 @@ export const getServerSideProps = async (context) => {
     res.writeHead(302, { Location: "/sign-in" });
     res.end();
   }
-  console.log(process.env.NEXT_PUBLIC_API);
+
   const products = await fetch(`${process.env.NEXT_PUBLIC_API}/api/product`, {
     method: "GET",
     headers: {
@@ -79,11 +69,31 @@ export const getServerSideProps = async (context) => {
     },
   });
 
+  const menuLinks = content.menuLinks;
+
   return {
     props: {
       products: await products.json(),
+      menuLinks,
     },
   };
+};
+
+Products.getLayout = function getLayout(page) {
+  const {
+    props: { menuLinks },
+  } = page;
+
+  const { isMobile } = useDeviceSize();
+  const LayoutComponent = isMobile ? MyAccountMobile : MyAccountDesktop;
+
+  return (
+    <>
+      <Layout title="My Products">
+        <LayoutComponent links={menuLinks}>{page}</LayoutComponent>
+      </Layout>
+    </>
+  );
 };
 
 export default Products;

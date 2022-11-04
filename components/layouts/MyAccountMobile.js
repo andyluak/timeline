@@ -2,11 +2,11 @@ import React from "react";
 
 import Dropdown from "components/ui/Dropdown";
 
-function MyAccountMobile({ children }) {
+function MyAccountMobile({ children, links }) {
   return (
     <>
-      <nav>
-        <Dropdown />
+      <nav className="flex justify-center items-center">
+        <Dropdown links={links}/>
       </nav>
       {children}
     </>

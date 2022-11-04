@@ -2,10 +2,13 @@ import React, { useState } from "react";
 
 import Layout from "components/layouts/Layout";
 import MyAccountMobile from "components/layouts/MyAccountMobile";
+import MyAccountDesktop from "components/layouts/MyAccountDesktop";
 
 import { getAuthCookie } from "utils/cookie";
 
 import useDeviceSize from "hooks/useDeviceSize";
+
+import content from "content.json";
 
 function MyAccount() {
   const [errors, setErrors] = useState([]);
@@ -84,12 +87,12 @@ function MyAccount() {
     return;
   };
   return (
-    <section className="responsive-padding flex flex-col justify-center">
+    <section className="responsive-padding flex w-full flex-col justify-start">
       <h1 className="tracking-header text-center text-4xl font-bold md:text-left">
         Account Details
       </h1>
       <form
-        className="m-auto mt-4 flex w-3/4 flex-col md:m-auto md:w-1/2"
+        className="m-auto mt-4 flex w-3/4 flex-col md:m-0 md:w-1/2"
         onSubmit={onHandleSubmit}
       >
         {changePasswordContent.map((f, i) => {
@@ -120,14 +123,25 @@ function MyAccount() {
   );
 }
 
+export const getServerSideProps = async () => {
+  const menuLinks = content.menuLinks;
+
+  return {
+    props: { menuLinks },
+  };
+};
+
 MyAccount.getLayout = function getLayout(page) {
+  const {
+    props: { menuLinks },
+  } = page;
   const { isMobile } = useDeviceSize();
-  const LayoutComponent = isMobile ? MyAccountMobile : React.Fragment;
+  const LayoutComponent = isMobile ? MyAccountMobile : MyAccountDesktop;
 
   return (
     <>
       <Layout title="My Account">
-        <LayoutComponent>{page}</LayoutComponent>
+        <LayoutComponent links={menuLinks}>{page}</LayoutComponent>
       </Layout>
     </>
   );
