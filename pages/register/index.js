@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
+
 import Layout from "components/layouts/Layout";
+
 import { setAuthCookie } from "utils/cookie";
 
 function Register() {

@@ -1,8 +1,10 @@
-import React from "react";
-import Navbar from "components/Navbar";
-import Footer from "components/Footer";
-import content from "content.json";
 import Head from "next/head";
+import React from "react";
+
+import Footer from "components/Footer";
+import Navbar from "components/Navbar";
+
+import content from "../../content.json";
 
 function Layout({ children, title }) {
   const { navLinks: links, copyright } = content;

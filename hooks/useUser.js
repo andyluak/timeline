@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { getAuthCookie } from "utils/cookie";
 
 function useUser() {
