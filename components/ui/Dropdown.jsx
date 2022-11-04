@@ -61,7 +61,7 @@ const Dropdown = () => {
           .map((item, i) => (
             <Link href={`/my-account${item.href}`} key={i}>
               <div
-                className="p-4 hover:cursor-pointer hover:bg-slate-100"
+                className="p-4 hover:cursor-pointer hover:underline"
                 onClick={(e) => handleItemClick(e.target.id)}
                 id={item.id}
               >
