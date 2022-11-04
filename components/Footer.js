@@ -1,4 +1,5 @@
 import React from "react";
+
 import content from "../content.json";
 
 function Footer({ copyright }) {

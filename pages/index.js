@@ -1,7 +1,10 @@
 import Image from "next/image";
-import Layout from "../components/layouts/Layout";
+
+import Layout from "components/layouts/Layout";
+
+import useDeviceSize from "hooks/useDeviceSize";
+
 import content from "../content.json";
-import useDeviceSize from "../hooks/useDeviceSize";
 
 export default function Home({ hero, features, useCases }) {
   const { isMobile } = useDeviceSize();

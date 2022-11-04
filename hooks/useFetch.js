@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { getAuthCookie } from "../utils/cookie";
+
+import { getAuthCookie } from "utils/cookie";
 
 const useFetch = (route, method, body) => {
   const [response, setResponse] = useState(null);

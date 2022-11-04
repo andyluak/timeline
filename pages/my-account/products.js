@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import Layout from "../../components/layouts/Layout";
-import MyAccountMobile from "../../components/layouts/MyAccountMobile";
-import ProductCreator from "../../containers/ProductCreator";
-import Button from "../../components/ui/Button";
-import useDeviceSize from "../../hooks/useDeviceSize";
-import Plus from "../../public/icons/plus.svg";
-import ProductListItem from "../../containers/ProductListItem";
+
+import Layout from "components/layouts/Layout";
+import MyAccountMobile from "components/layouts/MyAccountMobile";
+import Button from "components/ui/Button";
+
+import ProductCreator from "containers/ProductCreator";
+import ProductListItem from "containers/ProductListItem";
+
+import Plus from "public/icons/plus.svg";
+
+import useDeviceSize from "hooks/useDeviceSize";
 
 function Products({ products }) {
   const [isCreatingProduct, setIsCreatingProduct] = useState(false);
@@ -17,9 +21,10 @@ function Products({ products }) {
       <h2 className="tracking-header my-8 text-left text-3xl underline md:text-left">
         Current Products
       </h2>
-      {products.length > 0 && products.map((p, i) => {
-        return <ProductListItem order={i + 1} product={p} key={i} />;
-      })}
+      {products.length > 0 &&
+        products.map((p, i) => {
+          return <ProductListItem order={i + 1} product={p} key={i} />;
+        })}
       {products.length === 0 && (
         <div className="flex flex-col items-center md:items-start">
           <p className="tracking-body mt-8 text-center text-xl md:text-left">
@@ -37,7 +42,9 @@ function Products({ products }) {
         icon={<Plus />}
         onClick={() => setIsCreatingProduct(!isCreatingProduct)}
       />
-      {isCreatingProduct && <ProductCreator setIsCreatingProduct={setIsCreatingProduct}/>}
+      {isCreatingProduct && (
+        <ProductCreator setIsCreatingProduct={setIsCreatingProduct} />
+      )}
     </section>
   );
 }

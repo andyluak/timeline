@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const data = [
   { id: 0, label: "My Account", href: "/" },
@@ -61,7 +61,7 @@ const Dropdown = () => {
           .map((item, i) => (
             <Link href={`/my-account${item.href}`} key={i}>
               <div
-                className="p-4 hover:cursor-pointer hover:bg-slate-100"
+                className="p-4 hover:cursor-pointer hover:underline"
                 onClick={(e) => handleItemClick(e.target.id)}
                 id={item.id}
               >

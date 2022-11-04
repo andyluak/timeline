@@ -1,9 +1,11 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import Button from "../components/ui/Button";
-import { getAuthCookie } from "../utils/cookie";
 
-function ProductCreator({setIsCreatingProduct}) {
+import Button from "components/ui/Button";
+
+import { getAuthCookie } from "utils/cookie";
+
+function ProductCreator({ setIsCreatingProduct }) {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
 

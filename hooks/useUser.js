@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAuthCookie } from "../utils/cookie";
+
+import { getAuthCookie } from "utils/cookie";
 
 function useUser() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

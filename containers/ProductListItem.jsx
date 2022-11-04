@@ -1,14 +1,15 @@
-import { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import Modal from "../components/ui/Modal";
-import useFetch from "../hooks/useFetch";
-import { getAuthCookie } from "../utils/cookie";
 import { useRouter } from "next/router";
+import { Fragment, useState } from "react";
 
-import Pencil from "../public/icons/pencil.svg";
-import Trash from "../public/icons/trash.svg";
-import Cancel from "../public/icons/cancel.svg";
-import Save from "../public/icons/save.svg";
+import Modal from "components/ui/Modal";
+
+import { getAuthCookie } from "utils/cookie";
+
+import Cancel from "public/icons/cancel.svg";
+import Pencil from "public/icons/pencil.svg";
+import Save from "public/icons/save.svg";
+import Trash from "public/icons/trash.svg";
 
 function ProductListItem({ product: { name, id }, order }) {
   const [errors, setErrors] = useState([]);

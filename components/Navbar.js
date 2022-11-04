@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import useDeviceSize from "../hooks/useDeviceSize";
+
+import useDeviceSize from "hooks/useDeviceSize";
+import useUser from "hooks/useUser";
+
 import content from "../content.json";
-import useUser from "../hooks/useUser";
 
 function Navbar({ links }) {
   const { isMobile } = useDeviceSize();

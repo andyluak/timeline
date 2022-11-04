@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import Layout from "../../components/layouts/Layout";
-import { setAuthCookie } from "../../utils/cookie";
+
+import Layout from "components/layouts/Layout";
+
+import { setAuthCookie } from "utils/cookie";
 
 function SignIn() {
   const [errors, setErrors] = useState([]);
