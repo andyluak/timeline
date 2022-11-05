@@ -35,7 +35,7 @@ function UpdatePoint({ point, order, handleUpdateSelection }) {
         return;
       }
 
-      await handleUpdateSelection(point.updateId)
+      await handleUpdateSelection(point.updateId);
       return;
     } catch (e) {
       console.error(e);
@@ -60,7 +60,7 @@ function UpdatePoint({ point, order, handleUpdateSelection }) {
           }),
         }
       );
-      await handleUpdateSelection(point.updateId)
+      await handleUpdateSelection(point.updateId);
       return;
     } catch (e) {
       console.error(e);
@@ -70,11 +70,13 @@ function UpdatePoint({ point, order, handleUpdateSelection }) {
   const onHandleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const {description, type } = Object.fromEntries(formData);
+    const { description, type } = Object.fromEntries(formData);
 
-    await updateUpdatePoint({description, type});
+    await updateUpdatePoint({ description, type });
+    setIsChangingType(false);
+    setIsEditing(false);
     router.replace(router.asPath);
-  }
+  };
 
   const ChameleonComponent = () => {
     const values = [
@@ -99,7 +101,7 @@ function UpdatePoint({ point, order, handleUpdateSelection }) {
               })}
             </select>
           )}
-          <div className="flex flex-row gap-2 mt-2">
+          <div className="mt-2 flex flex-row gap-2">
             <button className="flex h-12 cursor-pointer flex-col items-center fill-white text-sm transition-all hover:border-b-2 hover:border-b-gray-300">
               <Save className="w-5" />
               <p>Save</p>
@@ -147,7 +149,10 @@ function UpdatePoint({ point, order, handleUpdateSelection }) {
                 <Pencil className="w-5" />
                 <p>Edit</p>
               </button>
-              <button className="flex h-12 cursor-pointer flex-col items-center fill-white text-sm transition-all hover:border-b-2 hover:border-b-gray-300" onClick={deleteUpdatePoint}>
+              <button
+                className="flex h-12 cursor-pointer flex-col items-center fill-white text-sm transition-all hover:border-b-2 hover:border-b-gray-300"
+                onClick={deleteUpdatePoint}
+              >
                 <Trash className="w-5" />
                 <p>Remove</p>
               </button>
