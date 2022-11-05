@@ -1,18 +1,17 @@
+import content from "content.json";
 import React, { useState } from "react";
 
 import Layout from "components/layouts/Layout";
+import MyAccountDesktop from "components/layouts/MyAccountDesktop";
 import MyAccountMobile from "components/layouts/MyAccountMobile";
 import Button from "components/ui/Button";
-import MyAccountDesktop from "components/layouts/MyAccountDesktop";
 
 import ProductCreator from "containers/ProductCreator";
 import ProductListItem from "containers/ProductListItem";
 
-import Plus from "public/icons/plus.svg";
-
 import useDeviceSize from "hooks/useDeviceSize";
 
-import content from "content.json";
+import Plus from "public/icons/plus.svg";
 
 function Products({ products }) {
   const [isCreatingProduct, setIsCreatingProduct] = useState(false);

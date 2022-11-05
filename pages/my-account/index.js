@@ -1,14 +1,13 @@
+import content from "content.json";
 import React, { useState } from "react";
 
 import Layout from "components/layouts/Layout";
-import MyAccountMobile from "components/layouts/MyAccountMobile";
 import MyAccountDesktop from "components/layouts/MyAccountDesktop";
-
-import { getAuthCookie } from "utils/cookie";
+import MyAccountMobile from "components/layouts/MyAccountMobile";
 
 import useDeviceSize from "hooks/useDeviceSize";
 
-import content from "content.json";
+import { getAuthCookie } from "utils/cookie";
 
 function MyAccount() {
   const [errors, setErrors] = useState([]);

@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import Pencil from "public/icons/pencil.svg";
-import Trash from "public/icons/trash.svg";
-import Tool from "public/icons/tool.svg";
-import Save from "public/icons/save.svg";
-import Cancel from "public/icons/cancel.svg";
-import { getAuthCookie } from "utils/cookie";
 import { useRouter } from "next/router";
+import React, { useState } from "react";
+
+import { getAuthCookie } from "utils/cookie";
+
+import Cancel from "public/icons/cancel.svg";
+import Pencil from "public/icons/pencil.svg";
+import Save from "public/icons/save.svg";
+import Tool from "public/icons/tool.svg";
+import Trash from "public/icons/trash.svg";
 
 function UpdatePoint({ point, order, handleUpdateSelection }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

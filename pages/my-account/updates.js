@@ -1,22 +1,21 @@
+import content from "content.json";
 import React, { useState } from "react";
 
-import MyAccountDesktop from "components/layouts/MyAccountDesktop";
 import Layout from "components/layouts/Layout";
+import MyAccountDesktop from "components/layouts/MyAccountDesktop";
 import MyAccountMobile from "components/layouts/MyAccountMobile";
 import Button from "components/ui/Button";
 import { ProductDropdown } from "components/ui/Dropdown";
 
-import { getAuthCookie } from "utils/cookie";
+import UpdateCreator from "containers/UpdateCreator";
+import UpdatePointCreator from "containers/UpdatePointCreator";
+import UpdatePoints from "containers/UpdatePoints";
 
 import useDeviceSize from "hooks/useDeviceSize";
 
+import { getAuthCookie } from "utils/cookie";
+
 import Plus from "public/icons/plus.svg";
-
-import content from "content.json";
-import UpdateCreator from "containers/UpdateCreator";
-import UpdatePointCreator from "containers/UpdatePointCreator";
-
-import UpdatePoints from "containers/UpdatePoints";
 
 function Updates({ products }) {
   const [isCreatingUpdate, setIsCreatingUpdate] = useState(false);

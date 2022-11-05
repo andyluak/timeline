@@ -1,5 +1,6 @@
-import Sidebar from "components/Sidebar";
 import React from "react";
+
+import Sidebar from "components/Sidebar";
 
 function MyAccountDesktop({ children, links }) {
   return (

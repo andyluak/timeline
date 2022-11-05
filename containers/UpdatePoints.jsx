@@ -1,4 +1,5 @@
 import React from "react";
+
 import UpdatePoint from "containers/UpdatePoint";
 
 function UpdatePoints({ updatePoints, handleUpdateSelection }) {
