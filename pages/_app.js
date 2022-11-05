@@ -11,24 +11,24 @@ function MyApp({ Component, pageProps }) {
 
     if (token) {
       removeAuthCookie();
-      router.push("/sign-in").then(() => router.reload());
+      router.push("/sign-in");
     }
   };
-  useEffect(() => {
-    const timer = new IdleTimer({
-      timeout: 120,
-      onTimeout: () => {
-        signOutUser();
-      },
-      onExpired: () => {
-        signOutUser();
-      },
-    });
+  // useEffect(() => {
+  //   const timer = new IdleTimer({
+  //     timeout: 12,
+  //     onTimeout: () => {
+  //       signOutUser();
+  //     },
+  //     onExpired: () => {
+  //       signOutUser();
+  //     },
+  //   });
 
-    return () => {
-      timer.cleanUp();
-    };
-  }, []);
+  //   return () => {
+  //     timer.cleanUp();
+  //   };
+  // }, []);
   const getLayout = Component.getLayout || ((page) => page);
 
   return getLayout(<Component {...pageProps} />);
