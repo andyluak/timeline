@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
+import Form from "components/ui/Form";
+
 import { getAuthCookie } from "utils/cookie";
 
 function UpdatePointCreator({
@@ -79,47 +81,12 @@ function UpdatePointCreator({
 
   return (
     <>
-      <form
+      <Form
         className="mt-8 flex w-2/3 flex-col gap-4"
-        onSubmit={handleOnSubmit}
-      >
-        {updatePointCreatorFormContent.map(
-          ({ type, label, name, values }, i) => {
-            switch (type) {
-              case "textarea":
-                return (
-                  <div className="mb-2 flex flex-col" key={i}>
-                    <label>{label}</label>
-                    <textarea name={name} />
-                  </div>
-                );
-
-              case "select":
-                return (
-                  <div className="mb-2 flex flex-col" key={i}>
-                    <label>{label}</label>
-                    <select name={name}>
-                      {values.map(({ id, label }, i) => {
-                        return (
-                          <option key={i} value={id}>
-                            {label}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-                );
-            }
-          }
-        )}
-        <button
-          className="relative mt-2 border bg-black p-3 uppercase text-white transition-all hover:border hover:border-black hover:bg-white hover:text-black"
-          aria-label="Sign In"
-          type="submit"
-        >
-          {loading ? "Loading..." : "Save"}
-        </button>
-      </form>
+        onHandleSubmit={handleOnSubmit}
+        inputs={updatePointCreatorFormContent}
+        buttonText={loading ? "Loading..." : "Save"}
+      />
       {errors.map((e, i) => {
         return (
           <p key={i} className="mt-4 text-center text-red-500">
