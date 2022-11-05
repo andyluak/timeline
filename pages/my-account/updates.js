@@ -129,22 +129,21 @@ function Updates({ products }) {
       )}
       {selectedProduct && selectedUpdate && updatePoints.length > 0 && (
         <>
-          <UpdatePoints updatePoints={updatePoints} />
-          <div className="flex flex-col gap-4 mt-4 items-center md:items-start">
-          <Button
-            text="add update point"
-            icon={<Plus />}
-            onClick={() => setIsCreatingUpdatePoint(!isCreatingUpdatePoint)}
-          />
-          {isCreatingUpdatePoint && (
-            <UpdatePointCreator
-              selectedUpdate={selectedUpdate}
-              setIsCreatingUpdatePoint={setIsCreatingUpdatePoint}
-              handleUpdateSelection={handleUpdateSelection}
+          <UpdatePoints updatePoints={updatePoints} handleUpdateSelection={handleUpdateSelection}/>
+          <div className="mt-4 flex flex-col items-center gap-4 md:items-start">
+            <Button
+              text="add update point"
+              icon={<Plus />}
+              onClick={() => setIsCreatingUpdatePoint(!isCreatingUpdatePoint)}
             />
-          )}
+            {isCreatingUpdatePoint && (
+              <UpdatePointCreator
+                selectedUpdate={selectedUpdate}
+                setIsCreatingUpdatePoint={setIsCreatingUpdatePoint}
+                handleUpdateSelection={handleUpdateSelection}
+              />
+            )}
           </div>
-          
         </>
       )}
     </section>
