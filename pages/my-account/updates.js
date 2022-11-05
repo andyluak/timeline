@@ -130,6 +130,7 @@ function Updates({ products }) {
       {selectedProduct && selectedUpdate && updatePoints.length > 0 && (
         <>
           <UpdatePoints updatePoints={updatePoints} />
+          <div className="flex flex-col gap-4 mt-4 items-center md:items-start">
           <Button
             text="add update point"
             icon={<Plus />}
@@ -142,6 +143,8 @@ function Updates({ products }) {
               handleUpdateSelection={handleUpdateSelection}
             />
           )}
+          </div>
+          
         </>
       )}
     </section>

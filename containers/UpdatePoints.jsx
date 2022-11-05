@@ -24,9 +24,9 @@ function UpdatePoints({ updatePoints }) {
   const hasBugFixes = updatePointsByType.BUG_FIX.length > 0;
   const hasImprovements = updatePointsByType.IMPROVEMENT.length > 0;
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col items-center md:items-start gap-6">
       {hasFeatures && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-1/2 md:w-full">
           <h3 className="tracking-body text-2xl font-bold">Features</h3>
           <ul className="flex flex-col gap-1">
             {updatePointsByType.FEATURE.map((point, i) => (
@@ -36,21 +36,21 @@ function UpdatePoints({ updatePoints }) {
         </div>
       )}
       {hasBugFixes && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-1/2 md:w-full">
           <h3 className="tracking-body text-2xl font-bold">Bug Fixes</h3>
           <ul>
             {updatePointsByType.BUG_FIX.map((point, i) => (
-              <li key={i}>{`${i + 1}.${point.description}`}</li>
+              <UpdatePoint point={point} order={i} />
             ))}
           </ul>
         </div>
       )}
       {hasImprovements && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-1/2 md:w-full">
           <h3 className="tracking-body text-2xl font-bold">Improvements</h3>
           <ul>
             {updatePointsByType.IMPROVEMENT.map((point, i) => (
-              <li key={point.id}>{`${i + 1}.${point.description}`}</li>
+              <UpdatePoint point={point} order={i} />
             ))}
           </ul>
         </div>

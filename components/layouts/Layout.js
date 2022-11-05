@@ -15,7 +15,7 @@ function Layout({ children, title }) {
         <title>{newTitle}</title>
       </Head>
       <Navbar links={links} />
-      <main className="w-screen">{children}</main>
+      <main>{children}</main>
       <Footer copyright={copyright} />
     </>
   );
