@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Button from "components/ui/Button";
 
 import { getAuthCookie } from "utils/cookie";
+import extendedFetch from "utils/extendedFetch";
 
 function ProductCreator({ setIsCreatingProduct }) {
   const [errors, setErrors] = useState([]);
@@ -11,26 +12,19 @@ function ProductCreator({ setIsCreatingProduct }) {
 
   const router = useRouter();
   async function addProduct({ name, token }) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/product`, {
+    const res = await extendedFetch({
+      endpoint: "api/product",
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
+      body: {
         name,
-      }),
+      },
+      errors,
+      setErrors,
+      setLoading,
+      token,
     });
 
-    if (res.status > 300) {
-      const error = await res.json();
-      setErrors(["You entered an invalid password !"]);
-    }
-
-    setLoading(false);
-    router.replace(router.asPath);
-    return;
+    return res;
   }
 
   const onHandleSubmit = async (e) => {
@@ -45,9 +39,9 @@ function ProductCreator({ setIsCreatingProduct }) {
     }
 
     const token = getAuthCookie();
-    setLoading(true);
     addProduct({ name, token });
     setIsCreatingProduct(false);
+    router.replace(router.asPath);
     e.target.reset();
   };
   return (
