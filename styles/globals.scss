@@ -35,7 +35,6 @@ main {
 }
 
 .tab {
-	font-family: "Patrick Hand";
 	text-transform: uppercase;
 	line-height: 0.8;
 	display: inline-block;
@@ -126,7 +125,6 @@ main {
 		border-radius: inherit;
 	}
 	&__inner {
-		font-family: "Yomogi", sans-serif;
 		display: none;
 		background: var(--background);
 		border-radius: inherit;
@@ -137,7 +135,6 @@ main {
 }
 
 .folder {
-	margin: 1rem auto;
 	max-width: 50rem;
 	width: 100%;
 	scrollbar-height: none; /* Firefox */

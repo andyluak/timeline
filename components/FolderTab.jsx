@@ -16,22 +16,22 @@ function FolderTab() {
   };
   return (
     <>
-      <div class="folder">
-        <div class="tabs">
-          <button class="tab text" onClick={handleTabSelection}>
+      <div className="folder">
+        <div className="tabs">
+          <button className="tab text active" onClick={handleTabSelection}>
             <div>
               <span id="text">Text</span>
             </div>
           </button>
-          <button class="tab mdx" onClick={handleTabSelection}>
+          <button className="tab mdx" onClick={handleTabSelection}>
             <div>
               <span id="mdx">MDX</span>
             </div>
           </button>
         </div>
-        <div class="content">
-          <div class="content__inner" id="tab-1">
-            <div class="page">
+        <div className="content">
+          <div className="content__inner" id="tab-1">
+            <div className="page">
               <p>
                 Productize. Optics accountable talk. Thought shower. High
                 performance keywords market-facing drink from the firehose, or
@@ -45,8 +45,8 @@ function FolderTab() {
               </p>
             </div>
           </div>
-          <div class="content__inner" id="tab-2">
-            <div class="page">
+          <div className="content__inner" id="tab-2">
+            <div className="page">
               <p>
                 I love cheese, especially the big cheese gouda. Monterey jack
                 red leicester roquefort cheese and wine fromage frais smelly
