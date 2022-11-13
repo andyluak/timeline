@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Form from "components/ui/Form";
 
 import { getAuthCookie } from "utils/cookie";
+import extendedFetch from "utils/extendedFetch";
 
 function UpdateCreator({ selectedProduct, setIsCreatingUpdate }) {
   const [errors, setErrors] = useState([]);
@@ -34,29 +35,20 @@ function UpdateCreator({ selectedProduct, setIsCreatingUpdate }) {
 
   async function addUpdate({ title, body, status }) {
     const token = getAuthCookie();
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/update`, {
+    await extendedFetch({
+      endpoint: "api/update",
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
+      token,
+      body: {
         title,
         status,
         body: body === "" ? false : body,
         productId: selectedProduct,
-      }),
+      },
+      setErrors,
+      setLoading,
+      errors,
     });
-
-    if (res.status > 300) {
-      const error = await res.json();
-      setErrors(["Something went wrong"]);
-    }
-
-    setLoading(false);
-    return res;
   }
 
   const handleOnSubmit = async (e) => {

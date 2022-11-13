@@ -86,8 +86,8 @@
   },
   "copyright": "© 2022 Meevi. All rights reserved.",
   "menuLinks": [
-    { "id": 0, "label": "My Account", "href": "/" },
-    { "id": 1, "label": "My Products", "href": "/products" },
+    { "id": 0, "label": "Account", "href": "/" },
+    { "id": 1, "label": "Products", "href": "/products" },
     { "id": 2, "label": "Updates", "href": "/updates" }
   ]
 }

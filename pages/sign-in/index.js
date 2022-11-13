@@ -6,6 +6,7 @@ import Layout from "components/layouts/Layout";
 import Form from "components/ui/Form";
 
 import { setAuthCookie } from "utils/cookie";
+import extendedFetch from "utils/extendedFetch";
 
 function SignIn() {
   const loginFormContent = [
@@ -22,31 +23,22 @@ function SignIn() {
   ];
 
   const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [validEmail, setValidEmail] = useState(false);
   const [validPassword, setValidPassword] = useState(false);
   const router = useRouter();
 
   const signIn = async ({ username, password }) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/signin`, {
+    const token = await extendedFetch({
+      endpoint: "signin",
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        password,
-      }),
+      body: { username, password },
+      errors,
+      setErrors,
+      setLoading,
     });
 
-    if (res.status > 300) {
-      const error = await res.json();
-      setErrors([error.message]);
-      return;
-    }
-
-    const token = await res.json();
-    return token;
+    return token?.token;
   };
 
   const onHandleSubmit = async (e) => {
@@ -92,8 +84,8 @@ function SignIn() {
     }
 
     if (validEmail && validPassword) {
-      const { token } = await signIn({ username, password });
-
+      const token = await signIn({ username, password });
+      console.log(token);
       if (token) {
         setAuthCookie(token);
         router.push("/");
@@ -110,7 +102,7 @@ function SignIn() {
         className="mt-4 flex flex-col md:m-auto md:w-1/2"
         onHandleSubmit={onHandleSubmit}
         inputs={loginFormContent}
-        buttonText="Sign In"
+        buttonText={loading ? "Loading" : "Sign in"}
       />
       {errors.map((e, i) => {
         return (

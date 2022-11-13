@@ -1,5 +1,5 @@
 import content from "content.json";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import Layout from "components/layouts/Layout";
 import MyAccountDesktop from "components/layouts/MyAccountDesktop";
@@ -11,10 +11,36 @@ import ProductListItem from "containers/ProductListItem";
 
 import useDeviceSize from "hooks/useDeviceSize";
 
+import { getAuthCookie } from "utils/cookie";
+import extendedFetch from "utils/extendedFetch";
+
 import Plus from "public/icons/plus.svg";
 
-function Products({ products }) {
+function Products() {
   const [isCreatingProduct, setIsCreatingProduct] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const token = getAuthCookie();
+
+  const fetchProducts = async () => {
+    if (!token || products.length > 0) return false;
+    const data = await extendedFetch({
+      endpoint: "api/product",
+      method: "GET",
+      errors,
+      setErrors,
+      setLoading,
+      token,
+    });
+    setProducts(data);
+    return data;
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   return (
     <section className="responsive-padding flex w-full flex-col justify-start">
       <h1 className="tracking-header text-center text-4xl font-bold md:text-left">
@@ -59,20 +85,10 @@ export const getServerSideProps = async (context) => {
     res.writeHead(302, { Location: "/sign-in" });
     res.end();
   }
-
-  const products = await fetch(`${process.env.NEXT_PUBLIC_API}/api/product`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${auth_token}`,
-    },
-  });
-
   const menuLinks = content.menuLinks;
 
   return {
     props: {
-      products: await products.json(),
       menuLinks,
     },
   };

@@ -5,6 +5,7 @@ import { Fragment, useState } from "react";
 import Modal from "components/ui/Modal";
 
 import { getAuthCookie } from "utils/cookie";
+import extendedFetch from "utils/extendedFetch";
 
 import Cancel from "public/icons/cancel.svg";
 import Pencil from "public/icons/pencil.svg";
@@ -30,24 +31,14 @@ function ProductListItem({ product: { name, id }, order }) {
 
   async function deleteProduct({ id }) {
     const token = getAuthCookie();
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API}/api/product/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (res.status > 300) {
-      const error = await res.json();
-      setErrors(["You entered an invalid password !"]);
-    }
-
-    setLoading(false);
+    await extendedFetch({
+      endpoint: `api/product/${id}`,
+      method: "DELETE",
+      errors,
+      setErrors,
+      setLoading,
+      token,
+    });
     closeModal();
     router.replace(router.asPath);
     return;
@@ -55,25 +46,17 @@ function ProductListItem({ product: { name, id }, order }) {
 
   async function editProduct() {
     const token = getAuthCookie();
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API}/api/product/${id}`,
-      {
-        method: "PATCH",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ name: newName }),
-      }
-    );
-
-    if (res.status > 300) {
-      const error = await res.json();
-      setErrors(["You entered an invalid password !"]);
-    }
-
-    setLoading(false);
+    await extendedFetch({
+      endpoint: `api/product/${id}`,
+      method: "PATCH",
+      errors,
+      setErrors,
+      setLoading,
+      token,
+      body: {
+        name: newName,
+      },
+    });
     setIsEditing(false);
     router.replace(router.asPath);
     return;

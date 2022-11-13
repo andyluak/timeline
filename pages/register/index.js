@@ -5,9 +5,11 @@ import Layout from "components/layouts/Layout";
 import Form from "components/ui/Form";
 
 import { setAuthCookie } from "utils/cookie";
+import extendedFetch from "utils/extendedFetch";
 
 function Register() {
   const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const registerFormContent = [
@@ -29,26 +31,16 @@ function Register() {
   ];
 
   const register = async ({ username, password }) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/user`, {
+    const res = await extendedFetch({
+      endpoint: "user",
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        password,
-      }),
+      body: { username, password },
+      errors,
+      setErrors,
+      setLoading,
     });
 
-    if (res.status > 300) {
-      const error = await res.json();
-      setErrors([error.message]);
-      return;
-    }
-
-    const token = await res.json();
-    return token;
+    return res?.token;
   };
 
   const onHandleSubmit = async (e) => {
@@ -92,7 +84,7 @@ function Register() {
       return;
     }
 
-    const { token } = await register({ username, password });
+    const token = await register({ username, password });
 
     if (token) {
       setAuthCookie(token);
@@ -106,7 +98,7 @@ function Register() {
         className="mt-4 flex flex-col md:m-auto md:w-1/2"
         onHandleSubmit={onHandleSubmit}
         inputs={registerFormContent}
-        buttonText="Register"
+        buttonText={loading ? "Loading" : "Register"}
       />
       {errors.map((e, i) => {
         return (
