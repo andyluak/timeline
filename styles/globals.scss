@@ -1,0 +1,229 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+	box-sizing: border-box;
+}
+
+@layer utilities {
+	.tracking-body {
+		letter-spacing: -0.055em;
+	}
+
+	.tracking-header {
+		letter-spacing: -0.015em;
+	}
+
+	.responsive-padding {
+		@apply p-5 md:px-10 lg:px-28;
+	}
+}
+
+@font-face {
+	font-family: "Futura Light";
+	src: url("/fonts/Futura Light font.ttf");
+}
+
+@font-face {
+	font-family: "Futura Bold";
+	src: url("/fonts/Futura Bold font.ttf");
+}
+
+main {
+	font-family: "Futura";
+}
+
+.tab {
+	font-family: "Patrick Hand";
+	text-transform: uppercase;
+	line-height: 0.8;
+	display: inline-block;
+	margin-left: -35px;
+	filter: drop-shadow(0px -3px 2px rgba(0, 0, 0, 0.05));
+	border: none;
+	border-radius: 6px 6px 0 0;
+	position: relative;
+	margin-right: 4rem;
+	background: var(--background);
+	white-space: nowrap;
+	cursor: pointer;
+	background: var(--background);
+	&:focus {
+		outline: none;
+		span {
+			border-bottom: 2px solid;
+			border-radius: 0;
+		}
+	}
+	&:first-of-type {
+		margin-left: 30px;
+	}
+	div {
+		background: var(--background);
+		padding: 6px 0;
+		position: relative;
+		z-index: 10;
+	}
+	span {
+		display: inline-block;
+		border: 2px solid transparent;
+		padding: 6px 15px 6px;
+		border-radius: 5px;
+		z-index: 5;
+		position: relative;
+		font-size: 140%;
+		color: #fff;
+		min-width: 6rem;
+	}
+	&:before,
+	&:after {
+		content: "";
+		height: 100%;
+		position: absolute;
+		background: var(--background);
+		border-radius: 8px 8px 0 0;
+		width: 30px;
+		top: 0;
+	}
+	&:before {
+		right: -16px;
+		transform: skew(25deg);
+		border-radius: 0 8px 0 0;
+	}
+	&:after {
+		transform: skew(-25deg);
+		left: -16px;
+		border-radius: 8px 0 0 0;
+	}
+	&.active {
+		z-index: 50;
+		position: relative;
+		span {
+			background: white;
+			box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+			border-radius: 5px;
+			color: black;
+		}
+	}
+}
+
+.content {
+	border-radius: 10px;
+	position: relative;
+	width: 100%;
+	#tab-1 {
+		display: block;
+	}
+	&:before {
+		content: "";
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		z-index: -1;
+		top: 0;
+		left: 0;
+		border-radius: inherit;
+	}
+	&__inner {
+		font-family: "Yomogi", sans-serif;
+		display: none;
+		background: var(--background);
+		border-radius: inherit;
+		padding: 1rem;
+		filter: drop-shadow(0px -2px 2px rgba(0, 0, 0, 0.1));
+		z-index: 5;
+	}
+}
+
+.folder {
+	margin: 1rem auto;
+	max-width: 50rem;
+	width: 100%;
+	scrollbar-height: none; /* Firefox */
+	-ms-overflow-style: none; /* IE 10+ */
+	::-webkit-scrollbar {
+		background: transparent; /* Chrome/Safari/Webkit */
+		display: none;
+	}
+
+  .tab,
+	.content__inner {
+		&:nth-of-type(1) {
+			--background: #af4d98;
+		}
+		&:nth-of-type(2) {
+			--background: #d66ba0;
+		}
+		&:nth-of-type(3) {
+			--background: #e5a9a9;
+		}
+		&:nth-of-type(4) {
+			--background: #6cb6bb;
+		}
+	}
+	.tab {
+		border: 2px solid;
+		border-width: 2px 0 0;
+		&:before,
+		&:after {
+			top: -2px;
+			border-top: 2px solid;
+		}
+		&:before {
+			border-right: 2px solid;
+		}
+		&:after {
+			border-left: 2px solid;
+		}
+		&.active {
+			span {
+				border: 2px solid;
+			}
+			&:focus span {
+				outline: 1px solid rgba(255, 255, 255, 0.7);
+			}
+		}
+		&:not(.active) {
+			border-bottom: 2px solid;
+			&:before,
+			&:after {
+				box-shadow: 0 1.5px 0 black;
+			}
+		}
+	}
+	.content {
+		top: -2px;
+		left: -2px;
+		&__inner {
+			box-shadow: 0 0 0 1.5px black;
+		}
+	}
+	.page {
+		border: 2px solid;
+	}
+}
+
+.page {
+	padding: 1.5rem;
+	border-radius: 2px;
+	min-height: 20rem;
+	line-height: 160%;
+	background-color: #f9f9f9;
+	filter: drop-shadow(0px 1px 3px rgba(0, 0, 0, 0.15));
+	background-image: linear-gradient(#e4e4e4 1px, transparent 1px);
+	background-size: 8% 8%, 2px 2px;
+}
+
+.tabs {
+	padding: 2rem 0 0 0;
+	width: 100%;
+	margin: 0 0.5rem;
+	overflow-x: auto;
+	width: calc(100% - 1rem);
+	white-space: nowrap;
+	@media(min-width: 50rem) {
+		margin: 0 2rem;
+		width: calc(100% - 4rem);
+	}
+}

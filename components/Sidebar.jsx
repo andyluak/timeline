@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import AccountIcon from "../public/icons/account.svg";
 import ProductsIcon from "../public/icons/products.svg";
 import UpdatesIcon from "../public/icons/updates.svg";
+import GeneratorIcon from "../public/icons/generator.svg";
 
 const IconMap = {
   Account: AccountIcon,
   Products: ProductsIcon,
   Updates: UpdatesIcon,
+  Generator: GeneratorIcon,
 };
 
 function Sidebar({ links }) {
@@ -36,7 +38,7 @@ function Sidebar({ links }) {
         <div className="w-full px-2">
           <div className="flex w-full flex-col items-center">
             {links.map((item) => {
-              const Icon = IconMap[item.label];
+              const Icon = IconMap[item.label] || null;
               return (
                 <Link
                   href={`/my-account${item.href}`}
