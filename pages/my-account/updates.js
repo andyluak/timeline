@@ -191,7 +191,8 @@ export const getServerSideProps = async (context) => {
 Updates.getLayout = function getLayout(page) {
   const {
     props: { menuLinks },
-  } = page;
+  } = page.props.children.props.children[0];
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { isMobile } = useDeviceSize();
   const LayoutComponent = isMobile ? MyAccountMobile : MyAccountDesktop;
 

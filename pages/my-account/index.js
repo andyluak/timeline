@@ -1,12 +1,8 @@
-import content from "content.json";
 import React, { useState } from "react";
 
 import Layout from "components/layouts/Layout";
-import MyAccountDesktop from "components/layouts/MyAccountDesktop";
-import MyAccountMobile from "components/layouts/MyAccountMobile";
+import MyAccountLayout from "components/layouts/MyAccountLayout";
 import Form from "components/ui/Form";
-
-import useDeviceSize from "hooks/useDeviceSize";
 
 import { getAuthCookie } from "utils/cookie";
 
@@ -108,25 +104,11 @@ function MyAccount() {
   );
 }
 
-export const getServerSideProps = async () => {
-  const menuLinks = content.menuLinks;
-
-  return {
-    props: { menuLinks },
-  };
-};
-
 MyAccount.getLayout = function getLayout(page) {
-  const {
-    props: { menuLinks },
-  } = page;
-  const { isMobile } = useDeviceSize();
-  const LayoutComponent = isMobile ? MyAccountMobile : MyAccountDesktop;
-
   return (
     <>
       <Layout title="My Account">
-        <LayoutComponent links={menuLinks}>{page}</LayoutComponent>
+        <MyAccountLayout>{page}</MyAccountLayout>
       </Layout>
     </>
   );

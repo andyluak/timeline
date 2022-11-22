@@ -1,45 +1,27 @@
-import content from "content.json";
-import React, { useEffect, useMemo, useState } from "react";
+import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
 
 import Layout from "components/layouts/Layout";
-import MyAccountDesktop from "components/layouts/MyAccountDesktop";
-import MyAccountMobile from "components/layouts/MyAccountMobile";
+import MyAccountLayout from "components/layouts/MyAccountLayout";
 import Button from "components/ui/Button";
 
 import ProductCreator from "containers/ProductCreator";
 import ProductListItem from "containers/ProductListItem";
 
-import useDeviceSize from "hooks/useDeviceSize";
-
 import { getAuthCookie } from "utils/cookie";
-import extendedFetch from "utils/extendedFetch";
+import { getProducts } from "utils/queries";
 
 import Plus from "public/icons/plus.svg";
 
 function Products() {
   const [isCreatingProduct, setIsCreatingProduct] = useState(false);
-  const [products, setProducts] = useState([]);
-  const [errors, setErrors] = useState([]);
-  const [loading, setLoading] = useState(false);
   const token = getAuthCookie();
 
-  const fetchProducts = async () => {
-    if (!token || products.length > 0) return false;
-    const data = await extendedFetch({
-      endpoint: "api/product",
-      method: "GET",
-      errors,
-      setErrors,
-      setLoading,
-      token,
-    });
-    setProducts(data);
-    return data;
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  const { data, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: () => getProducts(token),
+  });
+  const products = data ? data : [];
 
   return (
     <section className="responsive-padding flex w-full flex-col justify-start">
@@ -85,27 +67,21 @@ export const getServerSideProps = async (context) => {
     res.writeHead(302, { Location: "/sign-in" });
     res.end();
   }
-  const menuLinks = content.menuLinks;
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery(["products"], () => getProducts(auth_token));
 
   return {
     props: {
-      menuLinks,
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };
 
 Products.getLayout = function getLayout(page) {
-  const {
-    props: { menuLinks },
-  } = page;
-
-  const { isMobile } = useDeviceSize();
-  const LayoutComponent = isMobile ? MyAccountMobile : MyAccountDesktop;
-
   return (
     <>
       <Layout title="My Products">
-        <LayoutComponent links={menuLinks}>{page}</LayoutComponent>
+        <MyAccountLayout>{page}</MyAccountLayout>
       </Layout>
     </>
   );
