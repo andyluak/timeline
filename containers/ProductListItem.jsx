@@ -1,4 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 
@@ -6,6 +7,7 @@ import Modal from "components/ui/Modal";
 
 import { getAuthCookie } from "utils/cookie";
 import extendedFetch from "utils/extendedFetch";
+import { deleteProduct } from "utils/queries";
 
 import Cancel from "public/icons/cancel.svg";
 import Pencil from "public/icons/pencil.svg";
@@ -13,11 +15,46 @@ import Save from "public/icons/save.svg";
 import Trash from "public/icons/trash.svg";
 
 function ProductListItem({ product: { name, id }, order }) {
+  const queryClient = useQueryClient();
+
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState("");
+  const auth_token = getAuthCookie();
+
+  const deleteMutation = useMutation({
+    mutationFn: (variables) => {
+      const { id, auth_token } = variables;
+      fetch(`${process.env.NEXT_PUBLIC_API}/api/product/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth_token}`,
+        },
+      });
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries(["products"]);
+
+      // get prev products
+      const previousProducts = queryClient.getQueryData(["products"]);
+
+      queryClient.setQueryData(["products"], (oldProducts) =>
+        oldProducts.filter((product) => product.id !== variables.id)
+      );
+
+      return { previousProducts };
+    },
+    onError: (error, variables, context) => {
+      queryClient.setQueryData(["products"], context.previousProducts);
+    },
+    onSettled: () => {
+      setIsOpen(false);
+      // queryClient.invalidateQueries(["products"]);
+    },
+  });
 
   const router = useRouter();
 
@@ -27,21 +64,6 @@ function ProductListItem({ product: { name, id }, order }) {
 
   function closeModal() {
     setIsOpen(false);
-  }
-
-  async function deleteProduct({ id }) {
-    const token = getAuthCookie();
-    await extendedFetch({
-      endpoint: `api/product/${id}`,
-      method: "DELETE",
-      errors,
-      setErrors,
-      setLoading,
-      token,
-    });
-    closeModal();
-    router.replace(router.asPath);
-    return;
   }
 
   async function editProduct() {
@@ -141,7 +163,9 @@ function ProductListItem({ product: { name, id }, order }) {
                     className="relative mt-2 border bg-black p-3 uppercase text-white transition-all hover:border hover:border-black hover:bg-white hover:text-black"
                     aria-label="Sign In"
                     type="submit"
-                    onClick={() => deleteProduct({ id })}
+                    onClick={() =>
+                      deleteMutation.mutate({ id, auth_token, name })
+                    }
                   >
                     {"Yes"}
                   </button>
