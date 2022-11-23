@@ -1,31 +1,53 @@
-import { useRouter } from "next/router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 
 import Button from "components/ui/Button";
 
 import { getAuthCookie } from "utils/cookie";
-import extendedFetch from "utils/extendedFetch";
 
-function ProductCreator({ setIsCreatingProduct }) {
+function ProductCreator({ setIsCreatingProduct, nameInputRef }) {
+  const queryClient = useQueryClient();
+
   const [errors, setErrors] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
-  async function addProduct({ name, token }) {
-    const res = await extendedFetch({
-      endpoint: "api/product",
-      method: "POST",
-      body: {
-        name,
-      },
-      errors,
-      setErrors,
-      setLoading,
-      token,
-    });
+  const addProductMutation = useMutation({
+    mutationFn: async (variables) => {
+      const { name, auth_token } = variables;
 
-    return res;
-  }
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/product`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth_token}`,
+        },
+        body: JSON.stringify({ name }),
+      });
+
+      if (!res.ok) {
+        const { errors } = await res.json();
+        throw new Error(errors);
+      }
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries(["products"]);
+
+      // get prev products
+      const previousProducts = queryClient.getQueryData(["products"]);
+
+      queryClient.setQueryData(["products"], (oldProducts) => [
+        ...oldProducts,
+        { name: variables.name, id: new Date() },
+      ]);
+
+      return { previousProducts };
+    },
+    onError: (error, variables, context) => {
+      queryClient.setQueryData(["products"], context.previousProducts);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["products"]);
+    },
+  });
 
   const onHandleSubmit = async (e) => {
     setErrors([]);
@@ -38,10 +60,9 @@ function ProductCreator({ setIsCreatingProduct }) {
       return;
     }
 
-    const token = getAuthCookie();
-    addProduct({ name, token });
+    const auth_token = getAuthCookie();
+    addProductMutation.mutate({ name, auth_token });
     setIsCreatingProduct(false);
-    router.replace(router.asPath);
     e.target.reset();
   };
   return (
@@ -52,10 +73,19 @@ function ProductCreator({ setIsCreatingProduct }) {
       >
         <div className="flex w-2/3 flex-col">
           <label>Product Name</label>
-          <input type="text" name="name" id="name" className="mb-2" />
+          <input
+            type="text"
+            name="name"
+            id="name"
+            className="mb-2"
+            ref={nameInputRef}
+          />
         </div>
 
-        <Button text={loading ? "Loading" : "Save changes"} type="submit" />
+        <Button
+          text={addProductMutation.isLoading ? "Loading" : "Save changes"}
+          type="submit"
+        />
       </form>
       {errors.map((e, i) => {
         return (

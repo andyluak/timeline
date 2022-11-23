@@ -1,5 +1,5 @@
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import Layout from "components/layouts/Layout";
 import MyAccountLayout from "components/layouts/MyAccountLayout";
@@ -23,6 +23,8 @@ function Products() {
   });
   const products = data ? data : [];
 
+  const nameInputRef = useRef(null);
+
   return (
     <section className="responsive-padding flex w-full flex-col justify-start">
       <h1 className="tracking-header text-center text-4xl font-bold md:text-left">
@@ -43,17 +45,30 @@ function Products() {
           <Button
             text="add product"
             icon={<Plus />}
-            onClick={() => setIsCreatingProduct(true)}
+            onClick={() => {
+              setIsCreatingProduct(true);
+              setTimeout(() => {
+                nameInputRef.current.focus();
+              }, 300);
+            }}
           />
         </div>
       )}
       <Button
         text="add product"
         icon={<Plus />}
-        onClick={() => setIsCreatingProduct(!isCreatingProduct)}
+        onClick={() => {
+          setIsCreatingProduct(true);
+          setTimeout(() => {
+            nameInputRef.current.focus();
+          }, 100);
+        }}
       />
       {isCreatingProduct && (
-        <ProductCreator setIsCreatingProduct={setIsCreatingProduct} />
+        <ProductCreator
+          setIsCreatingProduct={setIsCreatingProduct}
+          nameInputRef={nameInputRef}
+        />
       )}
     </section>
   );
