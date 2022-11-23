@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import content from "content.json";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import Layout from "components/layouts/Layout";
 import MyAccountLayout from "components/layouts/MyAccountLayout";
@@ -11,7 +12,7 @@ import UpdatePointCreator from "containers/UpdatePointCreator";
 import UpdatePoints from "containers/UpdatePoints";
 
 import { getAuthCookie } from "utils/cookie";
-import extendedFetch from "utils/extendedFetch";
+import { getProducts } from "utils/queries";
 
 import Plus from "public/icons/plus.svg";
 
@@ -24,23 +25,13 @@ function Updates() {
 
   const [selectedUpdate, setSelectedUpdate] = useState(null);
   const [updatePoints, setUpdatePoints] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [errors, setErrors] = useState([]);
-  const [loading, setLoading] = useState(false);
   const token = getAuthCookie();
 
-  useEffect(() => {
-    extendedFetch({
-      endpoint: "api/product",
-      method: "GET",
-      errors,
-      setErrors,
-      setLoading,
-      token,
-    }).then((data) => {
-      setProducts(data);
-    });
-  }, []);
+  const { data, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: () => getProducts(token),
+  });
+  const products = data ? data : [];
 
   let formattedUpdatePoints;
 
