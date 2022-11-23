@@ -2,16 +2,13 @@ import content from "content.json";
 import React, { useEffect, useState } from "react";
 
 import Layout from "components/layouts/Layout";
-import MyAccountDesktop from "components/layouts/MyAccountDesktop";
-import MyAccountMobile from "components/layouts/MyAccountMobile";
+import MyAccountLayout from "components/layouts/MyAccountLayout";
 import Button from "components/ui/Button";
 import { ProductDropdown } from "components/ui/Dropdown";
 
 import UpdateCreator from "containers/UpdateCreator";
 import UpdatePointCreator from "containers/UpdatePointCreator";
 import UpdatePoints from "containers/UpdatePoints";
-
-import useDeviceSize from "hooks/useDeviceSize";
 
 import { getAuthCookie } from "utils/cookie";
 import extendedFetch from "utils/extendedFetch";
@@ -189,17 +186,10 @@ export const getServerSideProps = async (context) => {
 };
 
 Updates.getLayout = function getLayout(page) {
-  const {
-    props: { menuLinks },
-  } = page.props.children.props.children[0];
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { isMobile } = useDeviceSize();
-  const LayoutComponent = isMobile ? MyAccountMobile : MyAccountDesktop;
-
   return (
     <>
       <Layout title="Updates">
-        <LayoutComponent links={menuLinks}>{page}</LayoutComponent>
+        <MyAccountLayout>{page}</MyAccountLayout>
       </Layout>
     </>
   );
