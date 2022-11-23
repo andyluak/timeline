@@ -1,16 +1,15 @@
-import { useRouter } from "next/router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 
 import Form from "components/ui/Form";
 
 import { getAuthCookie } from "utils/cookie";
-import extendedFetch from "utils/extendedFetch";
 
 function UpdateCreator({ selectedProduct, setIsCreatingUpdate }) {
-  const [errors, setErrors] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
 
-  const router = useRouter();
+  const [errors, setErrors] = useState([]);
+
   const updateCreatorFormContent = [
     {
       label: "Title*",
@@ -33,23 +32,34 @@ function UpdateCreator({ selectedProduct, setIsCreatingUpdate }) {
     },
   ];
 
-  async function addUpdate({ title, body, status }) {
-    const token = getAuthCookie();
-    await extendedFetch({
-      endpoint: "api/update",
-      method: "POST",
-      token,
-      body: {
-        title,
-        status,
-        body: body === "" ? false : body,
-        productId: selectedProduct,
-      },
-      setErrors,
-      setLoading,
-      errors,
-    });
-  }
+  const addUpdateMutation = useMutation({
+    mutationFn: async (variables) => {
+      const { title, status, body, selectedProduct, auth_token } = variables;
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/update`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth_token}`,
+        },
+        body: JSON.stringify({
+          name,
+          title,
+          status,
+          body: body === "" ? false : body,
+          productId: selectedProduct,
+        }),
+      });
+
+      if (!res.ok) {
+        const { errors } = await res.json();
+        throw new Error(errors);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["products"]);
+    },
+  });
 
   const handleOnSubmit = async (e) => {
     setErrors([]);
@@ -64,11 +74,15 @@ function UpdateCreator({ selectedProduct, setIsCreatingUpdate }) {
 
       return;
     }
-
-    setLoading(true);
+    const auth_token = getAuthCookie();
     setIsCreatingUpdate(false);
-    await addUpdate({ title, body, status });
-    router.reload();
+    addUpdateMutation.mutate({
+      title,
+      body,
+      status,
+      auth_token,
+      selectedProduct,
+    });
   };
   return (
     <>
@@ -76,7 +90,7 @@ function UpdateCreator({ selectedProduct, setIsCreatingUpdate }) {
         className="mt-8 flex w-2/3 flex-col gap-4"
         onHandleSubmit={handleOnSubmit}
         inputs={updateCreatorFormContent}
-        buttonText={loading ? "Loading" : "Save"}
+        buttonText={addUpdateMutation.isLoading ? "Loading" : "Save"}
       />
       {errors.map((e, i) => {
         return (
