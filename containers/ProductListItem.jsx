@@ -112,8 +112,6 @@ function ProductListItem({ product: { name, id }, order }) {
     },
   });
 
-  const router = useRouter();
-
   function openModal() {
     setIsOpen(true);
   }
