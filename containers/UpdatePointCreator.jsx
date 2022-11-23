@@ -1,19 +1,14 @@
-import { useRouter } from "next/router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 import Form from "components/ui/Form";
 
 import { getAuthCookie } from "utils/cookie";
 
-function UpdatePointCreator({
-  selectedUpdate,
-  setIsCreatingUpdatePoint,
-  handleUpdateSelection,
-}) {
+function UpdatePointCreator({ selectedUpdate, setIsCreatingUpdatePoint }) {
+  const queryClient = useQueryClient();
   const [errors, setErrors] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
   const updatePointCreatorFormContent = [
     {
       label: "Description",
@@ -32,32 +27,63 @@ function UpdatePointCreator({
     },
   ];
 
-  async function addUpdatePoint({ description, type }) {
-    const token = getAuthCookie();
+  const addUpdatePointMutation = useMutation({
+    mutationFn: async (variables) => {
+      const { type, description, selectedUpdate, auth_token } = variables;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/updatepoint`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        type,
-        description,
-        updateId: selectedUpdate,
-      }),
-    });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API}/api/updatepoint`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth_token}`,
+          },
+          body: JSON.stringify({
+            type,
+            description,
+            updateId: selectedUpdate,
+          }),
+        }
+      );
+      if (!res.ok) {
+        const { errors } = await res.json();
+        throw new Error(errors);
+      }
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries(["updatePoints", selectedUpdate]);
+      const newUpdatePoint = {
+        id: new Date(),
+        type: variables.type,
+        description: variables.description,
+      };
+      const previousUpdate = queryClient.getQueryData([
+        "updatePoints",
+        selectedUpdate,
+      ]);
+      const newUpdate = {
+        ...previousUpdate,
+        updatePoints: [...previousUpdate.updatePoints, newUpdatePoint],
+      };
 
-    if (res.status > 300) {
-      const error = await res.json();
-      setErrors(["Something went wrong"]);
-    }
+      queryClient.setQueryData(
+        ["updatePoints", selectedUpdate],
+        () => newUpdate
+      );
 
-    setLoading(false);
-    router.replace(router.asPath);
-    return res;
-  }
+      return { previousUpdate };
+    },
+    onError: (error, variables, context) => {
+      queryClient.setQueryData(
+        ["updatePoints", selectedUpdate],
+        context.previousProducts
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["updatePoints", selectedUpdate]);
+    },
+  });
 
   const handleOnSubmit = async (e) => {
     setErrors([]);
@@ -72,11 +98,14 @@ function UpdatePointCreator({
 
       return;
     }
-
-    setLoading(true);
-    await addUpdatePoint({ description, type });
+    const auth_token = getAuthCookie();
+    addUpdatePointMutation.mutate({
+      type,
+      description,
+      selectedUpdate,
+      auth_token,
+    });
     setIsCreatingUpdatePoint(false);
-    handleUpdateSelection(selectedUpdate);
   };
 
   return (
@@ -85,7 +114,7 @@ function UpdatePointCreator({
         className="mt-8 flex w-2/3 flex-col gap-4"
         onHandleSubmit={handleOnSubmit}
         inputs={updatePointCreatorFormContent}
-        buttonText={loading ? "Loading..." : "Save"}
+        buttonText={addUpdatePointMutation.isLoading ? "Loading..." : "Save"}
       />
       {errors.map((e, i) => {
         return (

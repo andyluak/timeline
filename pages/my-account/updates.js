@@ -138,7 +138,6 @@ function Updates() {
               <UpdatePointCreator
                 selectedUpdate={selectedUpdate}
                 setIsCreatingUpdatePoint={setIsCreatingUpdatePoint}
-                handleUpdateSelection={handleUpdateSelection}
               />
             )}
           </div>
