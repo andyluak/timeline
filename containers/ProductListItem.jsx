@@ -6,8 +6,6 @@ import { Fragment, useRef, useState } from "react";
 import Modal from "components/ui/Modal";
 
 import { getAuthCookie } from "utils/cookie";
-import extendedFetch from "utils/extendedFetch";
-import { deleteProduct } from "utils/queries";
 
 import Cancel from "public/icons/cancel.svg";
 import Pencil from "public/icons/pencil.svg";
@@ -17,14 +15,13 @@ import Trash from "public/icons/trash.svg";
 function ProductListItem({ product: { name, id }, order }) {
   const queryClient = useQueryClient();
 
-  const [errors, setErrors] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const nameInputRef = useRef(null);
+
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState("");
-  const auth_token = getAuthCookie();
 
-  const nameInputRef = useRef(null);
+  const auth_token = getAuthCookie();
 
   const deleteMutation = useMutation({
     mutationFn: async (variables) => {
@@ -123,24 +120,6 @@ function ProductListItem({ product: { name, id }, order }) {
 
   function closeModal() {
     setIsOpen(false);
-  }
-
-  async function editProduct() {
-    const token = getAuthCookie();
-    await extendedFetch({
-      endpoint: `api/product/${id}`,
-      method: "PATCH",
-      errors,
-      setErrors,
-      setLoading,
-      token,
-      body: {
-        name: newName,
-      },
-    });
-    setIsEditing(false);
-    router.replace(router.asPath);
-    return;
   }
 
   return (
