@@ -12,7 +12,7 @@ import UpdatePointCreator from "containers/UpdatePointCreator";
 import UpdatePoints from "containers/UpdatePoints";
 
 import { getAuthCookie } from "utils/cookie";
-import { getProducts } from "utils/queries";
+import { getProducts, getUpdatePoints } from "utils/queries";
 
 import Plus from "public/icons/plus.svg";
 
@@ -24,7 +24,6 @@ function Updates() {
   const [updates, setUpdates] = useState([]);
 
   const [selectedUpdate, setSelectedUpdate] = useState(null);
-  const [updatePoints, setUpdatePoints] = useState([]);
   const token = getAuthCookie();
 
   const { data, isLoading } = useQuery({
@@ -33,35 +32,23 @@ function Updates() {
   });
   const products = data ? data : [];
 
+  const { data: updatePointsData, isLoading: updatePointsLoading } = useQuery({
+    queryKey: ["updatePoints", selectedUpdate || 0],
+    queryFn: () =>
+      getUpdatePoints({ auth_token: token, updateId: selectedUpdate }),
+    enabled: !!selectedUpdate,
+  });
+
+  const updatePoints = updatePointsData ? updatePointsData.updatePoints : [];
   let formattedUpdatePoints;
 
   const handleProductSelection = async (id) => {
     const product = products.find((product) => {
       return product.id == id;
     });
-
     setUpdates(product.updates);
   };
 
-  const handleUpdateSelection = async (id) => {
-    const auth_token = getAuthCookie();
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/api/update/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth_token}`,
-          },
-        }
-      );
-      const update = await res.json();
-      setUpdatePoints(update.updatePoints);
-    } catch (e) {
-      console.log(e);
-    }
-  };
   return (
     <section className="responsive-padding flex w-full flex-col justify-start">
       <h1 className="tracking-header hidden text-center text-4xl font-bold md:block md:text-left">
@@ -91,7 +78,7 @@ function Updates() {
       {updates.length > 0 && (
         <ProductDropdown
           products={updates}
-          selectCallback={handleUpdateSelection}
+          selectCallback={() => {}}
           selectedProduct={selectedUpdate}
           setSelectedProduct={setSelectedUpdate}
         />
@@ -139,7 +126,7 @@ function Updates() {
         <>
           <UpdatePoints
             updatePoints={updatePoints}
-            handleUpdateSelection={handleUpdateSelection}
+            handleUpdateSelection={() => {}}
           />
           <div className="mt-4 flex flex-col items-center gap-4 md:items-start">
             <Button
