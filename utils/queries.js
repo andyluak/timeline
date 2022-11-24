@@ -10,14 +10,17 @@ export async function getProducts(auth_token) {
   return data;
 }
 
-export async function getUpdatePoints({auth_token, updateId}) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/update/${updateId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${auth_token}`,
-    },
-  });
+export async function getUpdatePoints({ auth_token, updateId }) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API}/api/update/${updateId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${auth_token}`,
+      },
+    }
+  );
   const data = await res.json();
   return data;
 }

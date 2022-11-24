@@ -33,7 +33,6 @@ function Products() {
           products.map((p, i) => {
             return <ProductListItem order={i + 1} product={p} key={i} />;
           })}
-
         <ProductCreator hasProducts={products.length > 0} products={products} />
       </section>
     </TimerWrapper>
