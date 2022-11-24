@@ -4,35 +4,8 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "styles/globals.css";
-
-export const GlobalContext = React.createContext({ isMobile: false });
-
-export function GlobalContextWrapper({ children }) {
-  const [width, setWidth] = useState(0);
-  const isMobileState = width <= 768;
-
-  const handleWindowResize = () => {
-    setWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    handleWindowResize();
-    window.addEventListener("resize", handleWindowResize);
-    // unsubscribe from the event on component unmount
-    return () => window.removeEventListener("resize", handleWindowResize);
-  });
-  return (
-    <GlobalContext.Provider value={isMobileState}>
-      {children}
-    </GlobalContext.Provider>
-  );
-}
-
-export function useGlobalContext() {
-  return React.useContext(GlobalContext);
-}
 
 function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(
@@ -50,14 +23,12 @@ function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout || ((page) => page);
 
   return getLayout(
-    <GlobalContextWrapper>
-      <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps.dehydratedState}>
-          <Component {...pageProps} />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </Hydrate>
-      </QueryClientProvider>
-    </GlobalContextWrapper>
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <Component {...pageProps} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </Hydrate>
+    </QueryClientProvider>
   );
 }
 
