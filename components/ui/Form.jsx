@@ -41,6 +41,7 @@ function Form({ onHandleSubmit, inputs, buttonText, className }) {
       <button
         className="relative mt-2 border bg-black p-3 uppercase text-white transition-all hover:border hover:border-black hover:bg-white hover:text-black"
         aria-label={buttonText}
+        type="submit"
       >
         {buttonText}
       </button>
