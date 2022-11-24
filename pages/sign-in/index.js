@@ -24,8 +24,6 @@ function SignIn() {
 
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [validEmail, setValidEmail] = useState(false);
-  const [validPassword, setValidPassword] = useState(false);
   const router = useRouter();
 
   const signIn = async ({ username, password }) => {
