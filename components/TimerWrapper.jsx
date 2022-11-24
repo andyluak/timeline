@@ -1,26 +1,26 @@
-import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
-import { getAuthCookie } from 'utils/cookie';
+import { useEffect } from "react";
 
-function TimerWrapper({children}) {
-  const router = useRouter();
-  
+import { getAuthCookie } from "utils/cookie";
+
+const INTERVAL_DURATION = 1000 * 60 * 5;
+
+function TimerWrapper({ children }) {
   const handleTimerCheck = () => {
+    console.log("Heartbeat ♡");
     const token = getAuthCookie();
-    console.log('sal');
-    if( !token ) {
-      window.location.href = '/sign-in'
+    if (!token) {
+      window.location.href = "/sign-in";
     }
-  }
+  };
 
   useEffect(() => {
-    const interval = setInterval(handleTimerCheck, 3000);
+    const interval = setInterval(handleTimerCheck, INTERVAL_DURATION);
 
     return () => {
       clearInterval(interval);
-    }
-  }, [])
-  return children
+    };
+  }, []);
+  return children;
 }
 
-export default TimerWrapper
+export default TimerWrapper;

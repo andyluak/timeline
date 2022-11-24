@@ -1,14 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import Button from "components/ui/Button";
 
 import { getAuthCookie } from "utils/cookie";
 
-function ProductCreator({ setIsCreatingProduct, nameInputRef }) {
+import Plus from "public/icons/plus.svg";
+
+function ProductCreator({ hasProducts }) {
   const queryClient = useQueryClient();
 
+  const [isCreatingProduct, setIsCreatingProduct] = useState(false);
   const [errors, setErrors] = useState([]);
+
+  const nameInputRef = useRef(null);
 
   const addProductMutation = useMutation({
     mutationFn: async (variables) => {
@@ -65,35 +70,57 @@ function ProductCreator({ setIsCreatingProduct, nameInputRef }) {
     setIsCreatingProduct(false);
     e.target.reset();
   };
+
   return (
     <>
-      <form
-        className="mt-8 flex flex-col items-center gap-2 md:items-start"
-        onSubmit={onHandleSubmit}
-      >
-        <div className="flex w-2/3 flex-col">
-          <label>Product Name</label>
-          <input
-            type="text"
-            name="name"
-            id="name"
-            className="mb-2"
-            ref={nameInputRef}
-          />
-        </div>
-
-        <Button
-          text={addProductMutation.isLoading ? "Loading" : "Save changes"}
-          type="submit"
-        />
-      </form>
-      {errors.map((e, i) => {
-        return (
-          <p key={i} className="mt-4 text-center text-red-500 md:text-left">
-            {e}
+      {!hasProducts && (
+        <div className="flex flex-col items-center md:items-start">
+          <p className="tracking-body mt-8 text-center text-xl md:text-left">
+            You have no products yet. Click the button below to add a product.
           </p>
-        );
-      })}
+        </div>
+      )}
+      <Button
+        text="add product"
+        icon={<Plus />}
+        onClick={() => {
+          setIsCreatingProduct(true);
+          setTimeout(() => {
+            nameInputRef.current.focus();
+          }, 300);
+        }}
+      />
+      {isCreatingProduct && (
+        <>
+          <form
+            className="mt-8 flex flex-col items-center gap-2 md:items-start"
+            onSubmit={onHandleSubmit}
+          >
+            <div className="flex w-2/3 flex-col">
+              <label>Product Name</label>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                className="mb-2"
+                ref={nameInputRef}
+              />
+            </div>
+
+            <Button
+              text={addProductMutation.isLoading ? "Loading" : "Save changes"}
+              type="submit"
+            />
+          </form>
+          {errors.map((e, i) => {
+            return (
+              <p key={i} className="mt-4 text-center text-red-500 md:text-left">
+                {e}
+              </p>
+            );
+          })}
+        </>
+      )}
     </>
   );
 }
