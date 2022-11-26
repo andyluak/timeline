@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 import { getAuthCookie } from "utils/cookie";
@@ -10,7 +9,7 @@ import Save from "public/icons/save.svg";
 import Tool from "public/icons/tool.svg";
 import Trash from "public/icons/trash.svg";
 
-function UpdatePoint({ point, order, handleUpdateSelection }) {
+function UpdatePoint({ point, order }) {
   const queryClient = useQueryClient();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
