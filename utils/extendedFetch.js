@@ -18,12 +18,6 @@ const extendedFetch = async ({
   setLoading(true);
 
   try {
-    const localStorageData = await getItemLocalStorage(endpoint);
-    if (localStorageData) {
-      console.log("data from local storage");
-      setLoading(false);
-      return localStorageData;
-    }
     const res = await fetch(`${process.env.NEXT_PUBLIC_API}/${endpoint}`, {
       method,
       headers,
@@ -51,8 +45,6 @@ const extendedFetch = async ({
       setLoading(false);
     }
     const data = await res.json();
-    console.log("data before setting", data);
-    setItemLocalStorage(endpoint, data);
     return data;
   } catch (e) {
     console.log(e);
@@ -63,21 +55,3 @@ const extendedFetch = async ({
 };
 
 export default extendedFetch;
-
-const setItemLocalStorage = (endpoint, value) => {
-  const key = endpoint.split("/")[1];
-  localStorage.setItem(key, JSON.stringify(value));
-  return value;
-};
-
-const getItemLocalStorage = (endpoint) => {
-  const key = endpoint.split("/")[1];
-  console.log(key);
-  const value = localStorage.getItem(key);
-  return JSON.parse(value);
-};
-
-const removeItemLocalStorage = (endpoint) => {
-  const key = endpoint.split("/")[1];
-  localStorage.removeItem(key);
-};

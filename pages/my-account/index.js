@@ -1,12 +1,9 @@
-import content from "content.json";
 import React, { useState } from "react";
 
+import TimerWrapper from "components/TimerWrapper";
 import Layout from "components/layouts/Layout";
-import MyAccountDesktop from "components/layouts/MyAccountDesktop";
-import MyAccountMobile from "components/layouts/MyAccountMobile";
+import MyAccountLayout from "components/layouts/MyAccountLayout";
 import Form from "components/ui/Form";
-
-import useDeviceSize from "hooks/useDeviceSize";
 
 import { getAuthCookie } from "utils/cookie";
 
@@ -87,46 +84,34 @@ function MyAccount() {
     return;
   };
   return (
-    <section className="responsive-padding flex w-full flex-col justify-start">
-      <h1 className="tracking-header text-center text-4xl font-bold md:text-left">
-        Account Details
-      </h1>
-      <Form
-        className="m-auto mt-4 flex w-3/4 flex-col md:m-0 md:w-1/2"
-        onHandleSubmit={onHandleSubmit}
-        inputs={changePasswordContent}
-        buttonText={loading ? "Loading" : "Save Changes"}
-      />
-      {errors.map((e, i) => {
-        return (
-          <p key={i} className="mt-4 text-center text-red-500 md:text-left">
-            {e}
-          </p>
-        );
-      })}
-    </section>
+    <TimerWrapper>
+      <section className="responsive-padding flex w-full flex-col justify-start">
+        <h1 className="tracking-header text-center text-4xl font-bold md:text-left">
+          Account Details
+        </h1>
+        <Form
+          className="m-auto mt-4 flex w-3/4 flex-col md:m-0 md:w-1/2"
+          onHandleSubmit={onHandleSubmit}
+          inputs={changePasswordContent}
+          buttonText={loading ? "Loading" : "Save Changes"}
+        />
+        {errors.map((e, i) => {
+          return (
+            <p key={i} className="mt-4 text-center text-red-500 md:text-left">
+              {e}
+            </p>
+          );
+        })}
+      </section>
+    </TimerWrapper>
   );
 }
 
-export const getServerSideProps = async () => {
-  const menuLinks = content.menuLinks;
-
-  return {
-    props: { menuLinks },
-  };
-};
-
 MyAccount.getLayout = function getLayout(page) {
-  const {
-    props: { menuLinks },
-  } = page;
-  const { isMobile } = useDeviceSize();
-  const LayoutComponent = isMobile ? MyAccountMobile : MyAccountDesktop;
-
   return (
     <>
       <Layout title="My Account">
-        <LayoutComponent links={menuLinks}>{page}</LayoutComponent>
+        <MyAccountLayout>{page}</MyAccountLayout>
       </Layout>
     </>
   );

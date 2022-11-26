@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 
 import { getAuthCookie } from "utils/cookie";
@@ -9,52 +9,79 @@ import Save from "public/icons/save.svg";
 import Tool from "public/icons/tool.svg";
 import Trash from "public/icons/trash.svg";
 
-function UpdatePoint({ point, order, handleUpdateSelection }) {
+function UpdatePoint({ point, order }) {
+  const queryClient = useQueryClient();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingType, setIsChangingType] = useState(false);
 
-  const router = useRouter();
+  const auth_token = getAuthCookie();
 
-  async function deleteUpdatePoint() {
-    try {
-      const token = getAuthCookie();
+  const deleteMutation = useMutation({
+    mutationFn: async (variables) => {
+      const { id, auth_token } = variables;
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/api/updatepoint/${point.id}`,
+        `${process.env.NEXT_PUBLIC_API}/api/updatepoint/${id}`,
         {
           method: "DELETE",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${auth_token}`,
           },
         }
       );
 
-      if (res.status > 300) {
-        const error = await res.json();
-        setErrors(["You entered an invalid password !"]);
-        return;
+      if (!res.ok) {
+        const { errors } = await res.json();
+        throw new Error(errors);
       }
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries(["updatePoints", point.updateId]);
 
-      await handleUpdateSelection(point.updateId);
-      return;
-    } catch (e) {
-      console.error(e);
-    }
-  }
+      const previousUpdate = queryClient.getQueryData([
+        "updatePoints",
+        point.updateId,
+      ]);
 
-  async function updateUpdatePoint({ description, type }) {
-    try {
-      const token = getAuthCookie();
+      const newUpdate = {
+        ...previousUpdate,
+        updatePoints: previousUpdate.updatePoints.filter(
+          (updatePoint) => updatePoint.id !== variables.id
+        ),
+      };
+
+      queryClient.setQueryData(
+        ["updatePoints", point.updateId],
+        () => newUpdate
+      );
+
+      return { previousUpdate };
+    },
+    onError: (error, variables, context) => {
+      queryClient.setQueryData(
+        ["updatePoints", point.updateId],
+        context.previousUpdate
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["updatePoints", point.updateId]);
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async (variables) => {
+      const { id, auth_token, description, type } = variables;
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/api/updatepoint/${point.id}`,
+        `${process.env.NEXT_PUBLIC_API}/api/updatepoint/${id}`,
         {
           method: "PUT",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${auth_token}`,
           },
           body: JSON.stringify({
             description: description !== "" ? description : point.description,
@@ -62,22 +89,63 @@ function UpdatePoint({ point, order, handleUpdateSelection }) {
           }),
         }
       );
-      await handleUpdateSelection(point.updateId);
-      return;
-    } catch (e) {
-      console.error(e);
-    }
-  }
+
+      if (!res.ok) {
+        const { errors } = await res.json();
+        throw new Error(errors);
+      }
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries(["updatePoints", point.updateId]);
+
+      const previousUpdate = queryClient.getQueryData([
+        "updatePoints",
+        point.updateId,
+      ]);
+
+      const newUpdate = {
+        ...previousUpdate,
+        updatePoints: previousUpdate.updatePoints.map((updatePoint) => {
+          if (updatePoint.id === variables.id) {
+            return {
+              ...updatePoint,
+              description:
+                variables.description !== ""
+                  ? variables.description
+                  : point.description,
+              type: variables.type,
+            };
+          }
+          return updatePoint;
+        }),
+      };
+
+      queryClient.setQueryData(
+        ["updatePoints", point.updateId],
+        () => newUpdate
+      );
+
+      return { previousUpdate };
+    },
+    onError: (error, variables, context) => {
+      queryClient.setQueryData(
+        ["updatePoints", point.updateId],
+        context.previousUpdate
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["updatePoints", point.updateId]);
+    },
+  });
 
   const onHandleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const { description, type } = Object.fromEntries(formData);
 
-    await updateUpdatePoint({ description, type });
+    updateMutation.mutate({ description, type, id: point.id, auth_token });
     setIsChangingType(false);
     setIsEditing(false);
-    router.replace(router.asPath);
   };
 
   const ChameleonComponent = () => {
@@ -153,7 +221,9 @@ function UpdatePoint({ point, order, handleUpdateSelection }) {
               </button>
               <button
                 className="flex h-12 cursor-pointer flex-col items-center fill-white text-sm transition-all hover:border-b-2 hover:border-b-gray-300"
-                onClick={deleteUpdatePoint}
+                onClick={() => {
+                  deleteMutation.mutate({ id: point.id, auth_token });
+                }}
               >
                 <Trash className="w-5" />
                 <p>Remove</p>

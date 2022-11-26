@@ -1,9 +1,10 @@
+import { useQuery } from "@tanstack/react-query";
 import content from "content.json";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
+import TimerWrapper from "components/TimerWrapper";
 import Layout from "components/layouts/Layout";
-import MyAccountDesktop from "components/layouts/MyAccountDesktop";
-import MyAccountMobile from "components/layouts/MyAccountMobile";
+import MyAccountLayout from "components/layouts/MyAccountLayout";
 import Button from "components/ui/Button";
 import { ProductDropdown } from "components/ui/Dropdown";
 
@@ -11,10 +12,8 @@ import UpdateCreator from "containers/UpdateCreator";
 import UpdatePointCreator from "containers/UpdatePointCreator";
 import UpdatePoints from "containers/UpdatePoints";
 
-import useDeviceSize from "hooks/useDeviceSize";
-
 import { getAuthCookie } from "utils/cookie";
-import extendedFetch from "utils/extendedFetch";
+import { getProducts, getUpdatePoints } from "utils/queries";
 
 import Plus from "public/icons/plus.svg";
 
@@ -26,150 +25,128 @@ function Updates() {
   const [updates, setUpdates] = useState([]);
 
   const [selectedUpdate, setSelectedUpdate] = useState(null);
-  const [updatePoints, setUpdatePoints] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [errors, setErrors] = useState([]);
-  const [loading, setLoading] = useState(false);
   const token = getAuthCookie();
 
-  useEffect(() => {
-    extendedFetch({
-      endpoint: "api/product",
-      method: "GET",
-      errors,
-      setErrors,
-      setLoading,
-      token,
-    }).then((data) => {
-      setProducts(data);
-    });
-  }, []);
+  const { data, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: () => getProducts(token),
+  });
+  const products = data ? data : [];
 
+  const { data: updatePointsData, isLoading: updatePointsLoading } = useQuery({
+    queryKey: ["updatePoints", selectedUpdate || 0],
+    queryFn: () =>
+      getUpdatePoints({ auth_token: token, updateId: selectedUpdate }),
+    enabled: !!selectedUpdate,
+  });
+
+  const updatePoints = updatePointsData ? updatePointsData.updatePoints : [];
   let formattedUpdatePoints;
 
   const handleProductSelection = async (id) => {
     const product = products.find((product) => {
       return product.id == id;
     });
-
     setUpdates(product.updates);
   };
 
-  const handleUpdateSelection = async (id) => {
-    const auth_token = getAuthCookie();
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API}/api/update/${id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth_token}`,
-          },
-        }
-      );
-      const update = await res.json();
-      setUpdatePoints(update.updatePoints);
-    } catch (e) {
-      console.log(e);
-    }
-  };
   return (
-    <section className="responsive-padding flex w-full flex-col justify-start">
-      <h1 className="tracking-header hidden text-center text-4xl font-bold md:block md:text-left">
-        Updates
-      </h1>
-      {products.length > 0 && (
-        <ProductDropdown
-          products={products}
-          selectCallback={handleProductSelection}
-          selectedProduct={selectedProduct}
-          setSelectedProduct={setSelectedProduct}
-        />
-      )}
+    <TimerWrapper>
+      <section className="responsive-padding flex w-full flex-col justify-start">
+        <h1 className="tracking-header hidden text-center text-4xl font-bold md:block md:text-left">
+          Updates
+        </h1>
+        {products.length > 0 && (
+          <ProductDropdown
+            products={products}
+            selectCallback={handleProductSelection}
+            selectedProduct={selectedProduct}
+            setSelectedProduct={setSelectedProduct}
+          />
+        )}
 
-      {selectedProduct && updates.length === 0 && (
-        <div className="mb-8 flex flex-col items-center md:items-start">
-          <p className="tracking-body mt-8 text-center text-xl md:text-left">
-            You have no updates yet. Click the button below to add an update.
-          </p>
+        {selectedProduct && updates.length === 0 && (
+          <div className="mb-8 flex flex-col items-center md:items-start">
+            <p className="tracking-body mt-8 text-center text-xl md:text-left">
+              You have no updates yet. Click the button below to add an update.
+            </p>
+            <Button
+              text="add update"
+              icon={<Plus />}
+              onClick={() => setIsCreatingUpdate(!isCreatingUpdate)}
+            />
+          </div>
+        )}
+        {updates.length > 0 && (
+          <ProductDropdown
+            products={updates}
+            selectCallback={() => {}}
+            selectedProduct={selectedUpdate}
+            setSelectedProduct={setSelectedUpdate}
+          />
+        )}
+        <div className="flex w-full flex-col items-center justify-center gap-8 md:block">
           <Button
             text="add update"
             icon={<Plus />}
             onClick={() => setIsCreatingUpdate(!isCreatingUpdate)}
           />
-        </div>
-      )}
-      {updates.length > 0 && (
-        <ProductDropdown
-          products={updates}
-          selectCallback={handleUpdateSelection}
-          selectedProduct={selectedUpdate}
-          setSelectedProduct={setSelectedUpdate}
-        />
-      )}
-      <div className="flex w-full flex-col items-center justify-center gap-8 md:block">
-        <Button
-          text="add update"
-          icon={<Plus />}
-          onClick={() => setIsCreatingUpdate(!isCreatingUpdate)}
-        />
-        {isCreatingUpdate && (
-          <UpdateCreator
-            selectedProduct={selectedProduct}
-            setIsCreatingUpdate={setIsCreatingUpdate}
-          />
-        )}
-        {selectedProduct && selectedUpdate && (
-          <h2 className="tracking-header mt-8 mb-4 text-left text-3xl md:text-left">
-            Update Points
-          </h2>
-        )}
-      </div>
-      {selectedProduct && selectedUpdate && updatePoints.length == 0 && (
-        <>
-          <div className="mb-8 flex flex-col items-center md:items-start">
-            <p className="tracking-body mt-4 text-center text-xl md:text-left">
-              You have no update points yet. Click the button below to add an
-              update point.
-            </p>
-            <Button
-              text="add update point"
-              icon={<Plus />}
-              onClick={() => setIsCreatingUpdatePoint(!isCreatingUpdatePoint)}
-            />
-          </div>
-          {isCreatingUpdatePoint && (
-            <UpdatePointCreator
-              selectedUpdate={selectedUpdate}
-              setIsCreatingUpdatePoint={setIsCreatingUpdatePoint}
+          {isCreatingUpdate && (
+            <UpdateCreator
+              selectedProduct={selectedProduct}
+              setIsCreatingUpdate={setIsCreatingUpdate}
             />
           )}
-        </>
-      )}
-      {selectedProduct && selectedUpdate && updatePoints.length > 0 && (
-        <>
-          <UpdatePoints
-            updatePoints={updatePoints}
-            handleUpdateSelection={handleUpdateSelection}
-          />
-          <div className="mt-4 flex flex-col items-center gap-4 md:items-start">
-            <Button
-              text="add update point"
-              icon={<Plus />}
-              onClick={() => setIsCreatingUpdatePoint(!isCreatingUpdatePoint)}
-            />
+          {selectedProduct && selectedUpdate && (
+            <h2 className="tracking-header mt-8 mb-4 text-left text-3xl md:text-left">
+              Update Points
+            </h2>
+          )}
+        </div>
+        {selectedProduct && selectedUpdate && updatePoints.length == 0 && (
+          <>
+            <div className="mb-8 flex flex-col items-center md:items-start">
+              <p className="tracking-body mt-4 text-center text-xl md:text-left">
+                You have no update points yet. Click the button below to add an
+                update point.
+              </p>
+              <Button
+                text="add update point"
+                icon={<Plus />}
+                onClick={() => setIsCreatingUpdatePoint(!isCreatingUpdatePoint)}
+              />
+            </div>
             {isCreatingUpdatePoint && (
               <UpdatePointCreator
                 selectedUpdate={selectedUpdate}
                 setIsCreatingUpdatePoint={setIsCreatingUpdatePoint}
-                handleUpdateSelection={handleUpdateSelection}
               />
             )}
-          </div>
-        </>
-      )}
-    </section>
+          </>
+        )}
+        {selectedProduct && selectedUpdate && updatePoints.length > 0 && (
+          <>
+            <UpdatePoints
+              updatePoints={updatePoints}
+              handleUpdateSelection={() => {}}
+            />
+            <div className="mt-4 flex flex-col items-center gap-4 md:items-start">
+              <Button
+                text="add update point"
+                icon={<Plus />}
+                onClick={() => setIsCreatingUpdatePoint(!isCreatingUpdatePoint)}
+              />
+              {isCreatingUpdatePoint && (
+                <UpdatePointCreator
+                  selectedUpdate={selectedUpdate}
+                  setIsCreatingUpdatePoint={setIsCreatingUpdatePoint}
+                />
+              )}
+            </div>
+          </>
+        )}
+      </section>
+    </TimerWrapper>
   );
 }
 
@@ -189,16 +166,10 @@ export const getServerSideProps = async (context) => {
 };
 
 Updates.getLayout = function getLayout(page) {
-  const {
-    props: { menuLinks },
-  } = page;
-  const { isMobile } = useDeviceSize();
-  const LayoutComponent = isMobile ? MyAccountMobile : MyAccountDesktop;
-
   return (
     <>
       <Layout title="Updates">
-        <LayoutComponent links={menuLinks}>{page}</LayoutComponent>
+        <MyAccountLayout>{page}</MyAccountLayout>
       </Layout>
     </>
   );

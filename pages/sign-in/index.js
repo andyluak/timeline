@@ -24,8 +24,6 @@ function SignIn() {
 
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [validEmail, setValidEmail] = useState(false);
-  const [validPassword, setValidPassword] = useState(false);
   const router = useRouter();
 
   const signIn = async ({ username, password }) => {
@@ -69,8 +67,7 @@ function SignIn() {
         ...errors,
         "Username must be lowercase and contain no symbols or spaces",
       ]);
-    } else {
-      setValidEmail(true);
+      return;
     }
 
     if (!validatePassword(password)) {
@@ -79,19 +76,13 @@ function SignIn() {
         ...errors,
         "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.",
       ]);
-    } else {
-      setValidPassword(true);
+      return;
     }
 
-    if (validEmail && validPassword) {
-      const token = await signIn({ username, password });
-      console.log(token);
-      if (token) {
-        setAuthCookie(token);
-        router.push("/");
-      }
-    } else {
-      return;
+    const token = await signIn({ username, password });
+    if (token) {
+      setAuthCookie(token);
+      router.push("/");
     }
   };
 
